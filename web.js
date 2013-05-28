@@ -3,7 +3,7 @@ var app = express();
 app.use(express.logger());
 
 app.get('/', function(request, response) {
-  response.send('Hey Ma, look no hands! Email glen your public key');
+  response.send('Hey Ma, look no hands!');
 });
 
 var port = process.env.PORT || 5000;
