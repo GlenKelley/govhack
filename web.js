@@ -16,14 +16,17 @@ app.listen(port, function() {
 });
 
 
-var dburl = process.env.DATABASE_URL
+var dburl = process.env.DATABASE_URL || "postgresql://localhost"
 if (dburl) {
     var pg = require('pg');
     pg.connect(dburl, function(err, client) {
-      var query = client.query('SELECT * FROM your_table');
-
-      query.on('row', function(row) {
-        console.log(JSON.stringify(row));
-      });
+        if (!err) {
+            var query = client.query('SELECT * FROM your_table');
+            query.on('row', function(row) {
+                console.log(JSON.stringify(row));
+            });
+        } else {
+            console.log(err)
+        }
     });
 }
