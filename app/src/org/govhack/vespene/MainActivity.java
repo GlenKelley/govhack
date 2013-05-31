@@ -1,5 +1,7 @@
-package li.cutie.cutedaily;
+package org.govhack.vespene;
 
+import org.govhack.vespene.BuildConfig;
+import org.govhack.vespene.R;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.Days;

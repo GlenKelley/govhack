@@ -1,4 +1,4 @@
-package li.cutie.cutedaily;
+package org.govhack.vespene;
 
 import java.io.File;
 import java.io.FileOutputStream;

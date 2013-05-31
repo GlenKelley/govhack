@@ -1,4 +1,4 @@
-package li.cutie.cutedaily;
+package org.govhack.vespene;
 
 import android.view.View;
 import android.support.v4.view.ViewPager;

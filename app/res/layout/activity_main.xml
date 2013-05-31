@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/fragment_gallery"
-        android:name="li.cutie.cutedaily.GalleryFragment"
+        android:name="org.govhack.vespene.GalleryFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/gallery" />

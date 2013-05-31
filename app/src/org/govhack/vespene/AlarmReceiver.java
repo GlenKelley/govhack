@@ -1,4 +1,4 @@
-package li.cutie.cutedaily;
+package org.govhack.vespene;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import org.govhack.vespene.R;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
