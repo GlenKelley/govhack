@@ -2,11 +2,8 @@
 #MacOS finder thumbnail cache
 .DS_Store
 
-#build output
-build/
-
 #emacs backup files
 *~
 
-#local node libraries
-node_modules
+#node.js modules
+node_modules/

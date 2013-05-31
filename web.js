@@ -22,10 +22,14 @@ if (dburl) {
     pg.connect(dburl, function(err, client) {
         if (!err) {
             /*
-            var query = client.query('SELECT * FROM your_table');
-            query.on('row', function(row) {
-                console.log(JSON.stringify(row));
-            });
+            try {
+                var query = client.query('SELECT * FROM your_table');
+                query.on('row', function(row) {
+                    console.log(JSON.stringify(row));
+                });
+            } catch (e) {
+                console.log(e)
+            }
             */
         } else {
             console.log(err)
