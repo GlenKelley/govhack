@@ -17,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -124,6 +126,23 @@ public class AttractionDetailFragment extends Fragment {
       });
     } else {
       getV(R.id.detail_layout_email).setVisibility(View.GONE);
+    }
+    
+    View galleryHolder = getV(R.id.detail_gallery_holder);
+    if (product.multimedia.size() > 1) {
+      galleryHolder.setVisibility(View.VISIBLE);
+      LinearLayout images = (LinearLayout) getV(R.id.details_gallery_linear);
+      ImageFetcher fetcher = new ImageFetcher(getActivity());
+      LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+          LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+      lp.setMargins(0, 0, 0, 0);
+      for (String url : product.multimedia) {
+        ImageView imv = new ImageView(getActivity());
+        images.addView(imv, lp);
+        fetcher.fetchImageForView(url, imv);
+      }
+    } else {
+      galleryHolder.setVisibility(View.GONE);
     }
     
     GoogleMap map = mapFragment().getMap();
