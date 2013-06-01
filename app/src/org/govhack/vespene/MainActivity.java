@@ -1,7 +1,5 @@
 package org.govhack.vespene;
 
-import java.util.Locale;
-
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
 import org.govhack.vespene.atlas.Search;
@@ -13,6 +11,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -22,19 +21,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
-
 public class MainActivity extends Activity implements OnInitListener {  
   
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
   
   private static final DateMidnight BEGINNING = new DateMidnight(2013, 4, 14);
-  private static final String MP_API_TOKEN = "b84f696d81a182f5d327547dfa382648";
+//  private static final String MP_API_TOKEN = "b84f696d81a182f5d327547dfa382648";
   
   private static final String TAG = "Main";
 
-  private MixpanelAPI mp;
+//  private MixpanelAPI mp;
   
   private Atlas atlas = new Atlas(new AsyncUrlFetcher());
   private ProductList products = new ProductList(atlas);
@@ -53,15 +50,24 @@ public class MainActivity extends Activity implements OnInitListener {
     Log.i(TAG, "onCreate");
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
-    //getActionBar().setDisplayShowTitleEnabled(false);
     
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+    final FragmentManager fragmentManager = getFragmentManager();
+    fragmentManager.addOnBackStackChangedListener(new OnBackStackChangedListener() {
+      @Override
+      public void onBackStackChanged() {
+        if (fragmentManager.getBackStackEntryCount() < 1) {
+          getActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+      }
+    });
     
-    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
-    mp.identify(Installation.id(this));
-    if (Installation.wasNewInstallation()) {
-      track("new-install");
-    }
+//    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
+//    mp.identify(Installation.id(this));
+//    if (Installation.wasNewInstallation()) {
+//      track("new-install");
+//    }
     
     track("app-create");
     
@@ -116,10 +122,16 @@ public class MainActivity extends Activity implements OnInitListener {
   @Override
   protected void onStop() {
     Log.d(TAG, "onStop");
-    mp.flush();
+//    mp.flush();
     super.onStop();
   }
     
+  @Override
+  public void onResume() {
+    Log.d(TAG, "onResume");
+    super.onResume();
+  }
+  
   @Override
   protected void onSaveInstanceState(Bundle state) {
     super.onSaveInstanceState(state);
@@ -142,6 +154,9 @@ public class MainActivity extends Activity implements OnInitListener {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
+      case android.R.id.home:
+        getFragmentManager().popBackStack();
+        return true;
       case R.id.action_settings:
         // Display the fragment as the main content.
       SettingsFragment settings = new SettingsFragment();
@@ -176,7 +191,7 @@ public class MainActivity extends Activity implements OnInitListener {
     if (BuildConfig.DEBUG) {
       Log.d("MP", event + ": " + j);
     } else {
-      mp.track(event, j);            
+//      mp.track(event, j);            
     }
   }
 }

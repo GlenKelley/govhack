@@ -85,11 +85,12 @@ public class CardPagerAdapter extends BaseAdapter {
       public void onClick(View v) {
         Toast.makeText(activity, "Clicked on Attraction", Toast.LENGTH_SHORT).show();
         AttractionDetailFragment detailFragment = new AttractionDetailFragment();
+        
         detailFragment.setProduct(product);
         activity.getFragmentManager().beginTransaction()
         	.add(android.R.id.content, detailFragment)
         	.hide(activity.getFragmentManager().findFragmentById(R.id.fragment_gallery))
-        	.addToBackStack("prefs")
+        	.addToBackStack("cards")
         	.commit();
       }
     });

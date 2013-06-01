@@ -20,6 +20,7 @@ public class CardsFragment extends Fragment implements OnMenuVisibilityListener 
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
     setMenuVisibility(true);
+    getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
     activity = (MainActivity) getActivity();
 
     activity.getActionBar().addOnMenuVisibilityListener(this);
@@ -27,7 +28,8 @@ public class CardsFragment extends Fragment implements OnMenuVisibilityListener 
 
   @Override
   public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return root = (GridView) inflater.inflate(R.layout.gallery, container, false);
+    Log.d(TAG, "onCreateView");
+   return root = (GridView) inflater.inflate(R.layout.gallery, container, false);
   }
   
   public void setAdapter(CardPagerAdapter pagerAdapter) {
@@ -38,11 +40,12 @@ public class CardsFragment extends Fragment implements OnMenuVisibilityListener 
   public void onStart() {
     super.onStart();
     Log.d(TAG, "onStart");
-  }
+  } 
 
   @Override
   public void onResume () {
     super.onResume();
+    Log.d(TAG, "onResume");
   }
   
   @Override
