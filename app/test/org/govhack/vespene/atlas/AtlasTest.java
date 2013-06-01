@@ -14,9 +14,9 @@ public class AtlasTest extends TestCase {
     
 
     System.out.println("HI");
-    atlas.search(new Search(new LatLng(1, 1)), new Callback<List<Product>>() {
+    atlas.search(new Search(new LatLng(1, 1)), new Callback<List<ProductHeader>>() {
       @Override
-      public void success(List<Product> result) {
+      public void success(List<ProductHeader> result) {
         System.out.println("SUCCESS " + result);
         
       }

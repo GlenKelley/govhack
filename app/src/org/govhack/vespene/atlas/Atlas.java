@@ -49,7 +49,7 @@ public class Atlas {
     this.urlFetcher = urlFetcher;
   }
 
-  public void search(Search search, final Callback<List<Product>> cb) {
+  public void search(Search search, final Callback<List<ProductHeader>> cb) {
     String args = 
         "&latlong=" + search.location.toAtlasString() +
         "&dist=" + search.distancekms;
@@ -71,9 +71,9 @@ public class Atlas {
     urlFetcher.fetch(url, new JsonCallback(cb) {
       @Override public void data(JSONObject data) throws JSONException {
         JSONArray list = data.getJSONArray("products");
-        List<Product> products = Lists.newArrayList();
+        List<ProductHeader> products = Lists.newArrayList();
         for (int i = 0; i < list.length(); i++) {
-          products.add(new Product(list.getJSONObject(i)));
+          products.add(new ProductHeader(list.getJSONObject(i)));
         }
         
         cb.success(products);
