@@ -123,6 +123,7 @@ public class CardPagerAdapter extends BaseAdapter {
 
     TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
     addressText.setTypeface(tfThin);
+    addressText.setMaxLines(1);
 //    addressText.setTextSize(16.0f);
     String address = product.address.address;
     addressText.setText(address);
