@@ -6,6 +6,5 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="lib" path="/home/dan/code/govhack/app/libs/json-20090211.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
