@@ -21,8 +21,8 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 	
 	public LocationTracker(Context context, LocationListener locationListener) {
 		request = LocationRequest.create();
-	    request.setInterval(10000); //30 seconds
-	    request.setFastestInterval(5000); //10 seconds
+	    request.setInterval(30000); //30 seconds
+	    request.setFastestInterval(30000); //30 seconds
 	    
 		this.locationListener = locationListener;
 	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
