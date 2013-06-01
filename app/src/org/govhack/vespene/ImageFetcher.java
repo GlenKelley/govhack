@@ -115,6 +115,9 @@ public class ImageFetcher {
     new FetchTask(callback).execute(url);
   }
 
+  public void fetchImageForView(String url, ImageView view) {
+    fetchImage(url, new ImageUpdater(view));
+  }
   //////
 
   private String filenameForUrl(String url) {

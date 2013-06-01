@@ -3,8 +3,10 @@ package org.govhack.vespene;
 import org.govhack.vespene.atlas.Product;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -16,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,10 +35,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AttractionDetailFragment extends Fragment {
   
-  private static final int[] SADS = {
-    R.drawable.sad1, R.drawable.sad2, R.drawable.sad3, R.drawable.sad4 
-  };
-
   private Product product = null;
   private Typeface tfBold;
   private Typeface tfReg;
@@ -70,7 +70,9 @@ public class AttractionDetailFragment extends Fragment {
     super.onStart();  
     final LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
     final LinearLayout detailContainer = (LinearLayout)getV(R.id.detail_container);
-    ActionBar actionBar = getActivity().getActionBar();
+    final LinearLayout mapContainer = (LinearLayout)getV(R.id.detail_map_container);
+    final Activity activity = getActivity();
+    ActionBar actionBar = activity.getActionBar();
     actionBar.setTitle(product.name);
     actionBar.setDisplayHomeAsUpEnabled(true);
     
@@ -124,6 +126,35 @@ public class AttractionDetailFragment extends Fragment {
       getV(R.id.detail_layout_email).setVisibility(View.GONE);
     }
     
+    View galleryHolder = getV(R.id.detail_gallery_holder);
+    if (product.multimedia.size() > 1) {
+      galleryHolder.setVisibility(View.VISIBLE);
+      LinearLayout images = (LinearLayout) getV(R.id.details_gallery_linear);
+      ImageFetcher fetcher = new ImageFetcher(activity);
+      LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+          LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+      lp.setMargins(0, 0, 0, 0);
+      for (final String url : product.multimedia) {
+        ImageView imv = new ImageView(activity);
+        images.addView(imv, lp);
+        fetcher.fetchImageForView(url, imv);
+        imv.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            ImageViewFragment fragment = new ImageViewFragment();
+            fragment.setUrl(url);
+            activity.getFragmentManager().beginTransaction()
+                .add(android.R.id.content, fragment)
+                .hide(AttractionDetailFragment.this)
+                .addToBackStack("pic")
+                .commit();
+          }
+        });
+      }
+    } else {
+      galleryHolder.setVisibility(View.GONE);
+    }
+    
     GoogleMap map = mapFragment().getMap();
     mapFragment().getView().setBackgroundColor(Color.WHITE);
     LatLng ll = product.location.realLatLng();
@@ -137,22 +168,28 @@ public class AttractionDetailFragment extends Fragment {
         expandMap();
       }
     });
-//    map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
-//      @Override
-//      public void onInfoWindowClick(Marker arg0) {
-//        // TODO Auto-generated method stub
-//        
-//      }
-//    });
-    
-    detailContainer.setOnClickListener(new OnClickListener() {
+    mapContainer.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        LinearLayout.LayoutParams lp = 
-            new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1);
-        mapFragment().getView().setLayoutParams(lp);
-        sectionContainer.setWeightSum(3);
-        sectionContainer.requestLayout();
+        expandMap();
+      }
+    });
+    detailContainer.setOnClickListener(new OnClickListener() {
+      @Override 
+      public void onClick(View v) {
+        shrinkMap();
+      }
+    });
+    
+    map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+      @Override
+      public void onInfoWindowClick(Marker m) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, 
+            Uri.parse("http://maps.google.com/maps?daddr=" + m.getPosition().latitude
+                + "," + m.getPosition().longitude + "&dirflg=w"));
+        intent.setComponent(new ComponentName("com.google.android.apps.maps", 
+            "com.google.android.maps.MapsActivity"));
+        startActivity(intent);
       }
     });
   }
@@ -162,11 +199,22 @@ public class AttractionDetailFragment extends Fragment {
   }
   
   private void expandMap() {
-    final LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
+    LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
+    LinearLayout mapContainer = (LinearLayout)getV(R.id.detail_map_container);
     LinearLayout.LayoutParams lp = 
         new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 4);
-    mapFragment().getView().setLayoutParams(lp);
+    mapContainer.setLayoutParams(lp);
     sectionContainer.setWeightSum(6);
+    sectionContainer.requestLayout();
+  }
+
+  private void shrinkMap() {
+    LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
+    LinearLayout mapContainer = (LinearLayout)getV(R.id.detail_map_container);
+    LinearLayout.LayoutParams lp = 
+        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1);
+    mapContainer.setLayoutParams(lp);
+    sectionContainer.setWeightSum(3);
     sectionContainer.requestLayout();
   }
 
