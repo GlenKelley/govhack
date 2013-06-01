@@ -11,5 +11,6 @@ public enum Category {
   HIRE,
   INFO,
   RESTAURANT,
-  TRANSPORT;
+  TRANSPORT, 
+  UNKNOWN;
 }

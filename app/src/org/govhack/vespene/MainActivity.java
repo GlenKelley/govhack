@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
           @Override
           public void onUpdate() {
             Toast.makeText(getApplicationContext(), 
-                "YEAH", Toast.LENGTH_LONG).show();
+                "YEAH " + products.getList(), Toast.LENGTH_LONG).show();
           }
           
           @Override
