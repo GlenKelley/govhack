@@ -1,5 +1,6 @@
 package org.govhack.vespene;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.govhack.vespene.atlas.Atlas;
@@ -34,12 +35,18 @@ public class ProductList {
   private final List<Product> products = Lists.newArrayList();
   private int currentSearchId = 0;
   
+  private final List<Product> view = Collections.unmodifiableList(products);
+  
   public ProductList(Atlas atlas) {
     this.atlas = atlas;
   }
   
   public void setListener(Listener l) {
     this.listener = Preconditions.checkNotNull(l, "Null listener");
+  }
+  
+  public List<Product> getList() {
+    return view;
   }
   
   public void doSearch(Search search) {

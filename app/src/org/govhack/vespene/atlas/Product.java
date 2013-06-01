@@ -1,6 +1,5 @@
 package org.govhack.vespene.atlas;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Product {
@@ -10,7 +9,7 @@ public class Product {
   public final String description;
   public final Category categoryId;
   public final String imageUrl;
-  // TODO: perhaps also use "nearest location" field.
+  // TODO: perhaps also use "boundary" field also. Warning, sometimes is MULTIPOINT(..., ... ) etc.
   public final LatLng location;
   public final double locationKms;
   
@@ -24,15 +23,19 @@ public class Product {
     this.location = location;
     this.locationKms = locationKms;
   }
+  
+  public String toString() {
+    return name;
+  }
 
   public Product(JSONObject json) {
     this(
         Json.str(json, "productId"),
         Json.str(json, "productName"),
         Json.str(json, "productDescription"),
-        Category.valueOf(Json.str(json, "categoryId")),
+        Category.fromString(Json.str(json, "categoryId")),
         Json.str(json, "productImage"),
-        LatLng.parse(Json.str(json, "boundary")),
+        LatLng.parse(Json.str(json, "nearestLocation")),
         Double.parseDouble(Json.str(json, "distanceToLocation")));
   }
 }

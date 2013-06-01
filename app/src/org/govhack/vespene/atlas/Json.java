@@ -62,7 +62,7 @@ public class Json {
   }
   
   static String str(JSONObject json, String field) {
-	if (json.isNull(field)) {
+	if (json.has(field)) {
 		return null;
 	} else {
 	    try {
