@@ -138,10 +138,9 @@ public class MainActivity extends Activity {
           }
           
           @Override
-		public void onProductDetails(String id, ProductDetail productDetail) {
+          public void onProductDetails(String id, ProductDetail productDetail) {
 			// TODO Auto-generated method stub
-			
-		}
+          }
 
 		@Override
           public void onError(Exception e) {
