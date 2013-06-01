@@ -3,6 +3,7 @@ package org.govhack.vespene;
 import org.govhack.vespene.atlas.Product;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
@@ -34,10 +35,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AttractionDetailFragment extends Fragment {
   
-  private static final int[] SADS = {
-    R.drawable.sad1, R.drawable.sad2, R.drawable.sad3, R.drawable.sad4 
-  };
-
   private Product product = null;
   private Typeface tfBold;
   private Typeface tfReg;
@@ -74,7 +71,8 @@ public class AttractionDetailFragment extends Fragment {
     final LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
     final LinearLayout detailContainer = (LinearLayout)getV(R.id.detail_container);
     final LinearLayout mapContainer = (LinearLayout)getV(R.id.detail_map_container);
-    ActionBar actionBar = getActivity().getActionBar();
+    final Activity activity = getActivity();
+    ActionBar actionBar = activity.getActionBar();
     actionBar.setTitle(product.name);
     actionBar.setDisplayHomeAsUpEnabled(true);
     
@@ -132,14 +130,26 @@ public class AttractionDetailFragment extends Fragment {
     if (product.multimedia.size() > 1) {
       galleryHolder.setVisibility(View.VISIBLE);
       LinearLayout images = (LinearLayout) getV(R.id.details_gallery_linear);
-      ImageFetcher fetcher = new ImageFetcher(getActivity());
+      ImageFetcher fetcher = new ImageFetcher(activity);
       LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
           LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
       lp.setMargins(0, 0, 0, 0);
-      for (String url : product.multimedia) {
-        ImageView imv = new ImageView(getActivity());
+      for (final String url : product.multimedia) {
+        ImageView imv = new ImageView(activity);
         images.addView(imv, lp);
         fetcher.fetchImageForView(url, imv);
+        imv.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            ImageViewFragment fragment = new ImageViewFragment();
+            fragment.setUrl(url);
+            activity.getFragmentManager().beginTransaction()
+                .add(android.R.id.content, fragment)
+                .hide(AttractionDetailFragment.this)
+                .addToBackStack("pic")
+                .commit();
+          }
+        });
       }
     } else {
       galleryHolder.setVisibility(View.GONE);
