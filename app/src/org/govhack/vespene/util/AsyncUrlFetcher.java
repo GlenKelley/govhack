@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.apache.commons.io.Charsets;
+
 import android.os.AsyncTask;
 
 public class AsyncUrlFetcher {
@@ -38,7 +40,9 @@ public class AsyncUrlFetcher {
     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
     try {
       InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-      return Util.slurp(in);
+      return Util.slurp(in, 
+          /* atlas appears to be returning this... */
+          Charsets.UTF_16LE);
     } finally {
       urlConnection.disconnect();
     }
