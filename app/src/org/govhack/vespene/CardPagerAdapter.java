@@ -31,7 +31,8 @@ public class CardPagerAdapter extends BaseAdapter {
   @Override
   public int getCount() {
     return products.size();
-}
+  }
+
   @Override
   public Object getItem(int position) {
       return null;
@@ -68,12 +69,13 @@ public class CardPagerAdapter extends BaseAdapter {
     return populateView(cardView, product);
   }
   
-  private ViewGroup populateView(ViewGroup cardView, Product product) {
+  private ViewGroup populateView(ViewGroup cardView, final Product product) {
     cardView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         Toast.makeText(activity, "Clicked on Attraction", Toast.LENGTH_SHORT).show();
         AttractionDetailFragment detailFragment = new AttractionDetailFragment();
+        detailFragment.setProduct(product);
         activity.getFragmentManager().beginTransaction()
         	.add(android.R.id.content, detailFragment)
         	.hide(activity.getFragmentManager().findFragmentById(R.id.fragment_gallery))
@@ -86,6 +88,7 @@ public class CardPagerAdapter extends BaseAdapter {
     Typeface tf = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Bold.ttf");
     titleText.setTypeface(tf);
     titleText.setTextSize(20.0f);
+    titleText.setMaxLines(1);
     titleText.setText(product.name);
     
     FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
@@ -94,13 +97,18 @@ public class CardPagerAdapter extends BaseAdapter {
     thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
     thumbnailHolder.addView(thumbnail); 
     
-    LinearLayout descriptionHolder = (LinearLayout) cardView.findViewById(R.id.text_description_holder);
-    TextView description = new TextView(activity);
+    TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
+    Typeface tf3 = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Black.ttf");
+    addressText.setTypeface(tf3);
+    addressText.setTextSize(16.0f);
+    addressText.setText("Circular Quay");
+    
+    TextView description =  (TextView) cardView.findViewById(R.id.description_text);
     Typeface tf2 = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Thin.ttf");
     description.setTypeface(tf2);
     description.setTextSize(14.0f);
+    description.setMaxLines(3);
     description.setText(product.description);
-    descriptionHolder.addView(description);
     
     return cardView;
   }

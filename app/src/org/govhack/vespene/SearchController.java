@@ -27,11 +27,6 @@ public class SearchController {
         cards.setData(products.getList());
       }
       
-      @Override
-      public void onProductDetails(String id, ProductDetail productDetail) {
-        // TODO Auto-generated method stub
-      }
-      
       @Override public void onSearching() {
         Toast.makeText(cxt, "Searching", Toast.LENGTH_SHORT).show();
       }
