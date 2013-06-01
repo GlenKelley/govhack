@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
@@ -22,10 +23,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
-public class MainActivity extends Activity implements OnInitListener {  
-  
+public class MainActivity extends Activity implements OnInitListener, LocationListener {  
+
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
   
@@ -39,6 +47,7 @@ public class MainActivity extends Activity implements OnInitListener {
   private Atlas atlas = new Atlas(new AsyncUrlFetcher());
   private ProductList products = new ProductList(atlas);
   private TextToSpeech tts = null;
+  private LocationTracker locationTracker = null;
   
   private ImageFetcher images;
   
@@ -62,13 +71,19 @@ public class MainActivity extends Activity implements OnInitListener {
     if (Installation.wasNewInstallation()) {
       track("new-install");
     }
+
+    locationTracker = new LocationTracker(this, this);
     
-    track("app-create");
-    
+    track("app-create");    
 //    tts = new TextToSpeech(this, this);
   }
 
   @Override
+  public void onLocationChanged(Location location) {
+	 System.out.println("NEW LOCATION: " + location);
+  }
+
+@Override
   protected void onNewIntent(Intent i) {
     Log.i(TAG, "New intent: " + i.getAction());
     if (ACTION_LATEST.equals(i.getAction())) {
