@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 public class CardPagerAdapter extends BaseAdapter {
   private static final String TAG = "CardPagerAdapter";
-  
+
   private final MainActivity activity;
   private List<Product> products = Lists.newArrayList();
   
@@ -43,27 +43,27 @@ public class CardPagerAdapter extends BaseAdapter {
   
   public void setData(List<Product> products) {
     products = Preconditions.checkNotNull(products);
+    notifyDataSetChanged();
   }
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    
     // TODO: reuse convertView where possible, check if this code is ok
 //    if (convertView != null) {  // if it's not recycled, initialize some attributes
 //      return populateView((ViewGroup) convertView);
 //    }
     
-    return inflateCard(parent);
+    return inflateCard(parent, products.get(position));
   }
   
-  private ViewGroup inflateCard(ViewGroup parent) {
+  private ViewGroup inflateCard(ViewGroup parent, Product product) {
     ViewGroup cardView = 
         (ViewGroup) activity.getLayoutInflater().inflate(R.layout.card, parent, false);
     
-    return populateView(cardView);
+    return populateView(cardView, product);
   }
   
-  private ViewGroup populateView(ViewGroup cardView) {
+  private ViewGroup populateView(ViewGroup cardView, Product product) {
     cardView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -81,11 +81,11 @@ public class CardPagerAdapter extends BaseAdapter {
     Typeface tf = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Bold.ttf");
     titleText.setTypeface(tf);
     titleText.setTextSize(20.0f);
-    titleText.setText("Attraction Title");
+    titleText.setText(product.name);
     
     FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
     ImageView thumbnail = new ImageView(activity);
-    thumbnail.setImageResource(SADS[1]);
+    thumbnail.setImageResource(R.drawable.sad1); // TODO: use image stuff
     thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
     thumbnailHolder.addView(thumbnail); 
     
@@ -94,7 +94,7 @@ public class CardPagerAdapter extends BaseAdapter {
     Typeface tf2 = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Thin.ttf");
     description.setTypeface(tf2);
     description.setTextSize(14.0f);
-    description.setText("This is a description");
+    description.setText(product.description);
     descriptionHolder.addView(description);
     
     return cardView;

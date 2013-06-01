@@ -73,6 +73,15 @@ public class MainActivity extends Activity {
     }
   }
   
+  CardsFragment getCardsFragment() {
+    FragmentManager fm = getFragmentManager();
+//    while (fm.getBackStackEntryCount() > 0) {
+//      fm.popBackStackImmediate();
+//    }
+    return (CardsFragment) fm.findFragmentById(R.id.fragment_gallery);
+    //gallery.showLast();
+  }
+  
   @Override
   protected void onDestroy() {
     Log.d(TAG, "onDestroy");
@@ -81,6 +90,13 @@ public class MainActivity extends Activity {
   
   @Override
   protected void onStart() {
+    CardPagerAdapter cardAdapter = new CardPagerAdapter(this);
+    getCardsFragment().setAdapter(cardAdapter);
+    
+    //  maybe just make this a method that binds them together instead of a ctor...
+    new SearchController(getApplicationContext(), products, cardAdapter);
+    
+    
     Log.d(TAG, "onStart");
     super.onStart();
     track("app-start");
@@ -123,33 +139,7 @@ public class MainActivity extends Activity {
                 .commit();
         return true;
       case R.id.search_test:
-        products.setListener(new ProductList.Listener() {
-          
-          @Override
-          public void onUpdate() {
-            Toast.makeText(getApplicationContext(), 
-                "YEAH " + products.getList(), Toast.LENGTH_LONG).show();
-          }
-          
-          @Override
-          public void onSearching() {
-            Toast.makeText(getApplicationContext(), 
-                "Searching", Toast.LENGTH_SHORT).show();
-          }
-          
-          @Override
-          public void onProductDetails(String id, ProductDetail productDetail) {
-			// TODO Auto-generated method stub
-          }
-
-		@Override
-          public void onError(Exception e) {
-            Toast.makeText(getApplicationContext(), 
-                "ERROR", Toast.LENGTH_SHORT).show();
-            throw new RuntimeException(e);
-            
-          }
-        });
+       
         products.doSearch(new Search(LatLng.SYDNEY_CBD));
         return true;
       default:
