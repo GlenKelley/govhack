@@ -6,8 +6,11 @@ public class Product {
 	  public final String id;
 	  public final String name;
 	  public final String description;
+	  public final String phoneNumber = null;
+	  public final String emailAddress = null;
 	  public final Category categoryId;
 	  public final String imageUrl;
+	  // TODO: perhaps also use "boundary" field also. Warning, sometimes is MULTIPOINT(..., ... ) etc.
 	  
 	  public final LatLng location;
 	  public final double locationKms;
@@ -34,7 +37,7 @@ public class Product {
 		this.openTimes = openTimes;
 		this.address = address;
 	}
-
+	
 	public Product(ProductHeader header, ProductDetail detail) {
 		super();
 		this.id = header.id;
@@ -49,5 +52,9 @@ public class Product {
 		this.openTimes = detail.openTimes;
 		this.address = detail.address;
 	}
+
+  public String toString() {
+    return name;
+  }
 	  
 }

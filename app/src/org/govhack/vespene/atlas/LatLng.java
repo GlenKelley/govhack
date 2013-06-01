@@ -18,4 +18,5 @@ public class LatLng {
   }
   
   public final static LatLng SYDNEY_CBD = new LatLng(-33.868706,151.207556);
+  public final static LatLng CANBERRA = new LatLng(-35.281255,149.128933);
 }
