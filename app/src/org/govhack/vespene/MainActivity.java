@@ -139,8 +139,6 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     Log.d(TAG, "onStart");
     super.onStart();
     track("app-start");
-    products.doSearch(new Search(LatLng.SYDNEY_CBD));
-
     locationTracker = new LocationTracker(this, this);
 
 //	tts.setLanguage(Locale.US);
@@ -226,6 +224,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     	if (getFragmentManager().getBackStackEntryCount() < 1) {
     		locationOverride = false;
     		MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(false);
+    		MainActivity.this.getActionBar().setTitle("Oz Explore");
     		if (myLastlatLng != null) {
     			products.doSearch(new Search(myLastlatLng));
     		}
