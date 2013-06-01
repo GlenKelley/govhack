@@ -16,10 +16,13 @@ public class ProductDetail {
   public final String description;
   public final String openTimes;
   public final Address address;
-  public List<String> multimedia;
+  public final List<String> multimedia;
+  public final String email;
+  public final String phone;
+  public final String url;
 
   public ProductDetail(String id, String name, Date startDate, Date endDate,
-		String categoryDescription, String description, String openTimes, Address address, List<String> multimedia) {
+		String categoryDescription, String description, String openTimes, Address address, List<String> multimedia, String email, String phone, String url) {
 	this.id = id;
 	this.name = name;
 	this.startDate = startDate;
@@ -29,6 +32,9 @@ public class ProductDetail {
 	this.openTimes = openTimes;
 	this.address = address;
 	this.multimedia = multimedia;
+	this.email = email;
+	this.phone = phone;
+	this.url = url;
   }
 
   public static ProductDetail parseFromJson(JSONObject json) {
@@ -47,6 +53,26 @@ public class ProductDetail {
 			  multimedia.add(Json.str(jsonMediaItem, "serverPath"));
 		  }
 	  }
+
+	  String email = null;
+	  String phone = null;
+	  String url = null;
+	  if (!json.isNull("communication")) {
+		  JSONArray jsonContact = Json.getArray(json, "communication");
+		  for (int i = 0; i < jsonContact.length(); ++i) {
+			  JSONObject jsonCommsItem = Json.getObjectAt(jsonContact, i);
+			  String type = Json.str(jsonCommsItem, "attributeIdCommunication");
+			  String contact = Json.str(jsonCommsItem, "communicationDetail"); 
+			  if (type.equals("CAEMENQUIR")) {
+				  email = contact;
+			  } else if (type.equals("CAPHENQUIR")) {
+				  phone = contact;
+			  } else if (type.equals("CAURENQUIR")) {
+				  url = contact;
+			  }
+		  }
+	  }
+	  
 	  return new ProductDetail(
 		Json.str(json, "productId"),
 		Json.str(json, "productName"),
@@ -56,7 +82,10 @@ public class ProductDetail {
         Json.str(json, "productDescription"),
         openTimes,
         Address.parseJson(json, Json.getJson(json, "address")),
-        multimedia);
+        multimedia,
+        email,
+        phone,
+        url);
   }
 	
   	//TODO: entryCosts
