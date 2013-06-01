@@ -1,5 +1,8 @@
 package org.govhack.vespene;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
 import org.govhack.vespene.atlas.Search;
@@ -13,24 +16,20 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentManager.OnBackStackChangedListener;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.PopupWindow;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.google.android.gms.location.LocationListener;
 
@@ -53,6 +52,9 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
   private Favourites favourites = new Favourites();
 
   private ImageFetcher images;
+  
+  private boolean locationOverride = false;
+  private LatLng myLastlatLng = null;
 
   public static int dayCount() {
     DateMidnight today = new DateMidnight();
@@ -140,8 +142,10 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 
   @Override
   public void onLocationChanged(Location location) {
-	 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-	 products.doSearch(new Search(latLng));
+	 myLastlatLng = new LatLng(location.getLatitude(), location.getLongitude());
+	 if (!locationOverride) {
+		 products.doSearch(new Search(myLastlatLng));
+	 }
   }
 
   @Override
@@ -170,12 +174,34 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     getMenuInflater().inflate(R.menu.main, menu);
     
     SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-    searchView.setOnSearchClickListener(new OnClickListener() {
+    searchView.setIconifiedByDefault(true);
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 		@Override
-		public void onClick(View v) {
-			Log.e("Oleg", "onClick in search");
+		public boolean onQueryTextChange(String newText) {
+			return false;
 		}
-	});
+
+		@Override
+		public boolean onQueryTextSubmit(String query) {
+			Geocoder gc = new Geocoder(MainActivity.this);
+			try {
+				List<Address> address = gc.getFromLocationName(query, 1);
+				if (address.size() > 0) {
+					products.doSearch(new Search(new LatLng(address.get(0).getLatitude(), 
+							address.get(0).getLongitude())));
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			InputMethodManager im = (InputMethodManager) MainActivity.this
+		            .getSystemService(Context.INPUT_METHOD_SERVICE);
+		    im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
+		            .getWindowToken(), 0);
+		    locationOverride = true;
+			return true;
+		}
+    });
     
     track("options-menu-shown");
     return true;
@@ -189,7 +215,14 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-    	getFragmentManager().popBackStack();
+    	if (getFragmentManager().getBackStackEntryCount() < 1) {
+    		locationOverride = false;
+    		if (myLastlatLng != null) {
+    			products.doSearch(new Search(myLastlatLng));
+    		}
+    	} else {
+    		getFragmentManager().popBackStack();
+    	}
         return true;
       case R.id.action_settings:
         // Display the fragment as the main content.
