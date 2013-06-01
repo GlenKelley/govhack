@@ -26,7 +26,7 @@ public class CardsFragment extends Fragment implements OnMenuVisibilityListener 
     
     activity.getActionBar().addOnMenuVisibilityListener(this);
   }
- 
+
   @Override
   public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     pagerAdapter = new CardPagerAdapter(activity);

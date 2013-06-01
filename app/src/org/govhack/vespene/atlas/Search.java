@@ -14,6 +14,8 @@ public class Search {
    */
   public final EnumSet<Category> categories = EnumSet.noneOf(Category.class);
   
+  public String likeProductId;
+  
   public Search(LatLng location) {
     this.location = location;
   }
