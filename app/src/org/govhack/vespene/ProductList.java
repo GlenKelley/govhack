@@ -62,6 +62,7 @@ public class ProductList {
         products.clear();
         products.addAll(result);
         listener.onUpdate();
+        if (true) return;
         
         for (final Product product : result) {
         	atlas.lookupProduct(product.id, new Callback<ProductDetail>() {

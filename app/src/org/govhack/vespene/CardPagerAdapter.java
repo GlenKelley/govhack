@@ -7,6 +7,7 @@ import org.govhack.vespene.util.Lists;
 import org.govhack.vespene.util.Preconditions;
 
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -42,12 +43,16 @@ public class CardPagerAdapter extends BaseAdapter {
   }
   
   public void setData(List<Product> products) {
-    products = Preconditions.checkNotNull(products);
+
+    Log.w("DAN", "setData " + products.size());
+    this.products = Preconditions.checkNotNull(products);
     notifyDataSetChanged();
   }
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
+
+    Log.w("DAN", "getView " + position);
     // TODO: reuse convertView where possible, check if this code is ok
 //    if (convertView != null) {  // if it's not recycled, initialize some attributes
 //      return populateView((ViewGroup) convertView);
