@@ -12,7 +12,7 @@ public class Search {
   /**
    * if empty, then all categories (default)
    */
-  public final EnumSet<Category> categories = EnumSet.noneOf(Category.class);
+  public final EnumSet<Category> categories = Category.DEFAULTS;
   
   public String likeProductId;
   
