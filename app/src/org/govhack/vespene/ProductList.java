@@ -78,7 +78,9 @@ public class ProductList {
 			        if (searchId != currentSearchId) {
 			            return;
 			        }
-			        listener.onError(e);
+			        //suppress errors because ATLAS does not contain detailed info
+			        //for all products
+			        System.err.println(e);
 				}
 			});
         }
