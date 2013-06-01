@@ -1,6 +1,5 @@
 package org.govhack.vespene.atlas;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Product {
@@ -35,7 +34,7 @@ public class Product {
         Json.str(json, "productId"),
         Json.str(json, "productName"),
         Json.str(json, "productDescription"),
-        Category.ACCOM, //XXX XXX Category.valueOf(Json.str(json, "categoryId")),
+        Category.fromString(Json.str(json, "categoryId")),
         Json.str(json, "productImage"),
         LatLng.parse(Json.str(json, "nearestLocation")),
         Double.parseDouble(Json.str(json, "distanceToLocation")));
