@@ -41,6 +41,8 @@ public class SearchController {
         throw new RuntimeException(e);
       }
     });
+    
+    cards.setData(products.getList());
   }
 
   
