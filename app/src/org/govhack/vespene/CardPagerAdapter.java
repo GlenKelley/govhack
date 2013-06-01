@@ -4,10 +4,13 @@ import org.govhack.vespene.R;
 
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -62,7 +65,6 @@ public class CardPagerAdapter extends BaseAdapter {
       @Override
       public void onClick(View v) {
         Toast.makeText(activity, "Clicked on Attraction", Toast.LENGTH_SHORT).show();
-
       }
     });
 
@@ -71,15 +73,20 @@ public class CardPagerAdapter extends BaseAdapter {
     text.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
     text.setTextSize(20.0f);
     text.setText("Attraction Title");
-    topBarHolder.addView(text);
+    topBarHolder.addView(text);  
     
-    LinearLayout thumbnailHolder = (LinearLayout) cardView.findViewById(R.id.thumbnail_holder);
+    FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
     ImageView thumbnail = new ImageView(activity);
-    thumbnail.setImageResource(SADS[0]);
-    thumbnailHolder.addView(thumbnail);
+    thumbnail.setImageResource(SADS[1]);
+    thumbnail.setScaleType(ImageView.ScaleType.FIT_CENTER);
+    thumbnailHolder.addView(thumbnail); 
     
-    //thumbnailHolder.requestLayout();
-    //cardView.requestLayout();
+    LinearLayout descriptionHolder = (LinearLayout) cardView.findViewById(R.id.text_description_holder);
+    TextView description = new TextView(activity);
+    description.setTextSize(14.0f);
+    description.setText("This is a description");
+    descriptionHolder.addView(description);  
+    
     return cardView;
   }
 }

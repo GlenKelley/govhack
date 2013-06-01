@@ -11,12 +11,12 @@
         
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/thumbnail_holder"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="200dp" >
         
-    </LinearLayout>
+    </FrameLayout>
         
     <RelativeLayout
         android:layout_width="fill_parent"
