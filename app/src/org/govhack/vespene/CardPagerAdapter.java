@@ -3,6 +3,7 @@ package org.govhack.vespene;
 import java.util.List;
 
 import org.govhack.vespene.ImageFetcher.ImageUpdater;
+import org.govhack.vespene.atlas.LatLng;
 import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.util.Lists;
 import org.govhack.vespene.util.Preconditions;
@@ -20,6 +21,9 @@ import android.widget.Toast;
 
 public class CardPagerAdapter extends BaseAdapter {
   private static final String TAG = "CardPagerAdapter";
+  final Typeface tfBold;
+  final Typeface tfThin;
+
 
   private final MainActivity activity;
   private final ImageFetcher images;
@@ -28,6 +32,10 @@ public class CardPagerAdapter extends BaseAdapter {
   public CardPagerAdapter(MainActivity activity, ImageFetcher images) {
     this.activity = activity;
     this.images = images;
+    
+    tfBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Bold.ttf");
+    tfThin = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Thin.ttf");
+
   }
   
   @Override
@@ -77,18 +85,18 @@ public class CardPagerAdapter extends BaseAdapter {
       public void onClick(View v) {
         Toast.makeText(activity, "Clicked on Attraction", Toast.LENGTH_SHORT).show();
         AttractionDetailFragment detailFragment = new AttractionDetailFragment();
+        
         detailFragment.setProduct(product);
         activity.getFragmentManager().beginTransaction()
         	.add(android.R.id.content, detailFragment)
         	.hide(activity.getFragmentManager().findFragmentById(R.id.fragment_gallery))
-        	.addToBackStack("prefs")
+        	.addToBackStack("cards")
         	.commit();
       }
     });
 
     TextView titleText = (TextView) cardView.findViewById(R.id.card_title);
-    Typeface tf = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Bold.ttf");
-    titleText.setTypeface(tf);
+    titleText.setTypeface(tfBold);
     titleText.setTextSize(20.0f);
     titleText.setMaxLines(1);
     titleText.setText(product.name);
@@ -98,24 +106,34 @@ public class CardPagerAdapter extends BaseAdapter {
     if (product.imageUrl != null) {
       images.fetchImage(product.imageUrl, new ImageUpdater(thumbnail));
     }
-    
-    //thumbnail.setImageBitmap(bm)
     thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
     thumbnailHolder.addView(thumbnail);
     
+    ImageView map = (ImageView) cardView.findViewById(R.id.map_preview);
+    images.fetchImage(mapPreviewUrl(product.location), new ImageUpdater(map));
+    
     TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
-    Typeface tf3 = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Black.ttf");
-    addressText.setTypeface(tf3);
-    addressText.setTextSize(16.0f);
-    addressText.setText("Circular Quay");
+    addressText.setTypeface(tfThin);
+//    addressText.setTextSize(16.0f);
+    addressText.setText("123 Clarence St, Circular Quay");
+    
+    TextView distanceText = (TextView) cardView.findViewById(R.id.distance_text);
+    distanceText.setTypeface(tfThin);
+    distanceText.setText( ((int) (product.locationKms * 1000)) + "m");
     
     TextView description =  (TextView) cardView.findViewById(R.id.description_text);
-    Typeface tf2 = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Thin.ttf");
-    description.setTypeface(tf2);
+    description.setTypeface(tfThin);
     description.setTextSize(14.0f);
-    description.setMaxLines(3);
+    description.setMaxLines(7);
     description.setText(product.description);
     
     return cardView;
+  }
+  
+  static String mapPreviewUrl(LatLng at) {
+    String loc = at.toAtlasString();
+    return "http://maps.googleapis.com/maps/api/staticmap?center=" + loc 
+        + "&zoom=15&size=180x180&maptype=roadmap&markers=color:blue%7Clabel:X%7C" + loc 
+        + "&sensor=false";
   }
 }
