@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
   private ProductList products = new ProductList(atlas);
   private TextToSpeech tts = null;
   private LocationTracker locationTracker = null;
-  private Favourites favourites = new Favourites();
+  private Favourites favourites = new Favourites(this);
 
   private ImageFetcher images;
 
@@ -123,6 +123,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 
   @Override
   protected void onStart() {
+    favourites.load();
     CardPagerAdapter cardAdapter = new CardPagerAdapter(this, favourites, images);
     getCardsFragment().setAdapter(cardAdapter);
 
@@ -213,20 +214,24 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+    ActionBar actionBar = MainActivity.this.getActionBar();
     switch (item.getItemId()) {
       case android.R.id.home:
-    	if (getFragmentManager().getBackStackEntryCount() < 1) {
-    		locationOverride = false;
-    		MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(false);
-    		MainActivity.this.getActionBar().setTitle("Oz Explore");
-    		if (myLastlatLng != null) {
-    			products.doSearch(new Search(myLastlatLng));
-    		}
-    	} else {
-    		getFragmentManager().popBackStack();
-    	}
+        if (getFragmentManager().getBackStackEntryCount() < 1) {
+          locationOverride = false;
+          actionBar.setDisplayHomeAsUpEnabled(false);
+          actionBar.setTitle("Oz Explore - Near me");
+          if (myLastlatLng != null) {
+            products.doSearch(new Search(myLastlatLng));
+          }
+        } else {
+          getFragmentManager().popBackStack();
+        }
         return true;
       case R.id.menu_favourites:
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Favourites");
+        products.setListFromHeaders(favourites.getFavourites());
         return true;
       default:
         return super.onOptionsItemSelected(item);

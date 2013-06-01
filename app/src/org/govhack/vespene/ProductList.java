@@ -52,9 +52,7 @@ public class ProductList {
           return;
         }
 
-        clear();
-
-        fetchDetails(searchId, result);
+        setProducts(searchId, result);
       }
       @Override public void error(Exception e) {
         if (searchId != currentSearchId) {
@@ -66,7 +64,12 @@ public class ProductList {
     });
   }
 
-  private void fetchDetails(final int searchId, List<ProductHeader> headers) {
+  public void setListFromHeaders(Iterable<ProductHeader> headers) {
+    setProducts(++currentSearchId, headers);
+  }
+
+  private void setProducts(final int searchId, Iterable<ProductHeader> headers) {
+    clear();
     for (final ProductHeader header : headers) {
       if (header.imageUrl == null) {
         continue;

@@ -34,7 +34,7 @@ public final class ProductHeader {
   public ProductHeader(JSONObject json) {
     this(
         json.toString(),
-        Json.str(json, "productId"),
+        Json.str(json, "productId").replaceAll("\\$.*", ""), // Strip non-unique suffix
         Json.str(json, "productName"),
         Json.str(json, "productDescription"),
         Category.fromString(Json.str(json, "categoryId")),
