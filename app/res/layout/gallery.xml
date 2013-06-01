@@ -8,4 +8,5 @@
     android:horizontalSpacing="20dp"
     android:stretchMode="columnWidth"
     android:gravity="center"
+    android:background="@android:color/darker_gray"
 />
