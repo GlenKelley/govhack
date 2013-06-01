@@ -10,5 +10,6 @@
     android:gravity="center"
     android:paddingTop="20dp"
     android:paddingBottom="20dp"
+    android:clipToPadding="false"
     android:background="@android:color/darker_gray"
 />

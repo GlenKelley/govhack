@@ -107,8 +107,7 @@ public class CardPagerAdapter extends BaseAdapter {
     description.setTypeface(tf2);
     description.setTextSize(14.0f);
     description.setMaxLines(3);
-    description.setText("This is a description of Circular Quay where lots of awesome people live and " +
-    		"like to dance like a bunch of pretty and happy people. There lived a jolly person.");
+    description.setText(product.description);
     
     return cardView;
   }
