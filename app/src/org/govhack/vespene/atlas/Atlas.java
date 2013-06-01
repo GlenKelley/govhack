@@ -2,7 +2,6 @@ package org.govhack.vespene.atlas;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.govhack.vespene.util.AsyncUrlFetcher;

@@ -23,6 +23,12 @@
             </intent-filter>
         </activity>
         <receiver android:process=":remote" android:name="org.govhack.vespene.AlarmReceiver"></receiver>
+		    <!--  uses-library android:name="android.test.runner" /-->
     </application>
 
+    
+    <!-- instrumentation android:name="android.test.InstrumentationTestRunner"
+    android:targetPackage="org.govhack.vespene"
+    android:label="test" /-->
+    
 </manifest>
