@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements OnInitListener {
     }
     track("app-create");
     
-    tts = new TextToSpeech(this, this);
+//    tts = new TextToSpeech(this, this);
   }
 
   @Override
@@ -107,7 +107,7 @@ public class MainActivity extends Activity implements OnInitListener {
     Log.d(TAG, "onStart");
     super.onStart();
     track("app-start");
-	tts.setLanguage(Locale.US);
+//	tts.setLanguage(Locale.US);
   }
 
   @Override

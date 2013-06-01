@@ -6,6 +6,7 @@ import java.util.List;
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.atlas.ProductDetail;
+import org.govhack.vespene.atlas.ProductHeader;
 import org.govhack.vespene.atlas.Search;
 import org.govhack.vespene.util.Callback;
 import org.govhack.vespene.util.Lists;
@@ -21,11 +22,6 @@ public class ProductList {
      * Will not be called twice in a row, will always be preceded by onSearching
      */
     void onUpdate();
-
-    /**
-     * Will be called for each product in products, will always be preceded by onUpdate
-     */
-    void onProductDetails(String id, ProductDetail productDetail);
     
     void onError(Exception e);
   }
@@ -53,24 +49,25 @@ public class ProductList {
     Preconditions.checkState(listener != null, "Listener not initialised");
     final int searchId = ++currentSearchId;
     listener.onSearching();
-    atlas.search(search, new Callback<List<Product>>() {
+    atlas.search(search, new Callback<List<ProductHeader>>() {
       @Override
-      public void success(List<Product> result) {
+      public void success(List<ProductHeader> result) {
         if (searchId != currentSearchId) {
           return;
         }
         products.clear();
-        products.addAll(result);
         listener.onUpdate();
         
-        for (final Product product : result) {
-        	atlas.lookupProduct(product.id, new Callback<ProductDetail>() {
+        for (final ProductHeader header : result) {
+        	atlas.lookupProduct(header.id, new Callback<ProductDetail>() {
 				@Override
-				public void success(ProductDetail result) {
+				public void success(ProductDetail detail) {
 			        if (searchId != currentSearchId) {
 			            return;
 			        }
-			        listener.onProductDetails(product.id, result);
+			        Product product = new Product(header, detail);
+			        products.add(product);
+			        listener.onUpdate();
 				}
 
 				@Override
