@@ -51,7 +51,7 @@ public class CardPagerAdapter extends BaseAdapter {
     if (convertView == null) {  // if it's not recycled, initialize some attributes
       cardView = inflateCard(parent);
     } else {
-      cardView = (ViewGroup) convertView;
+      cardView = populateView((ViewGroup) convertView);
     }
 
     return cardView;
@@ -61,6 +61,10 @@ public class CardPagerAdapter extends BaseAdapter {
     ViewGroup cardView = 
         (ViewGroup) activity.getLayoutInflater().inflate(R.layout.card, parent, false);
     
+    return populateView(cardView);
+  }
+  
+  private ViewGroup populateView(ViewGroup cardView) {
     cardView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -88,7 +92,7 @@ public class CardPagerAdapter extends BaseAdapter {
     TextView description = new TextView(activity);
     description.setTextSize(14.0f);
     description.setText("This is a description");
-    descriptionHolder.addView(description);  
+    descriptionHolder.addView(description);
     
     return cardView;
   }
