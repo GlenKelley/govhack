@@ -21,14 +21,6 @@ import android.view.MenuItem;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
-/*
- * TODO:
- * - share image
- * - set wallpaper
- * - retry failed fetches
- * - preload tomorrow's image
- */
-
 public class MainActivity extends Activity {  
   
   public static final String ACTION_LATEST = "latest";
@@ -51,7 +43,7 @@ public class MainActivity extends Activity {
     super.onCreate(savedInstanceState);
     Log.i(TAG, "onCreate");
     setContentView(R.layout.activity_main);
-    getActionBar().setDisplayShowTitleEnabled(false);
+    //getActionBar().setDisplayShowTitleEnabled(false);
     
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     
@@ -61,8 +53,6 @@ public class MainActivity extends Activity {
       track("new-install");
     }
     track("app-create");
-    
-    scheduleWakeUp();
   }
 
   @Override
@@ -73,8 +63,8 @@ public class MainActivity extends Activity {
       while (fm.getBackStackEntryCount() > 0) {
         fm.popBackStackImmediate();
       }
-      GalleryFragment gallery = (GalleryFragment) fm.findFragmentById(R.id.fragment_gallery);
-      gallery.showLast();
+      //CardsFragment gallery = (CardsFragment) fm.findFragmentById(R.id.fragment_gallery);
+      //gallery.showLast();
       track("app-launch-from-notification");
     }
   }
@@ -147,22 +137,5 @@ public class MainActivity extends Activity {
     } else {
       mp.track(event, j);            
     }
-  }
-
-  private void scheduleWakeUp() {
-    // Compute time for first alarm.
-    DateMidnight tomorrowMidnight = new DateMidnight().plusDays(1);
-    DateTime tomorrowTenAm = new DateTime(tomorrowMidnight.year().get(), 
-            tomorrowMidnight.monthOfYear().get(), tomorrowMidnight.dayOfMonth().get(), 10, 0);
-    long utcMillis = tomorrowTenAm.getMillis();
-    
-    // Build intent.
-    Intent intent = new Intent(this, AlarmReceiver.class);
-    PendingIntent sender = PendingIntent.getBroadcast(this, ALARM_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    
-    // Schedule alarm.
-    AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-    am.setInexactRepeating(AlarmManager.RTC, utcMillis, AlarmManager.INTERVAL_DAY, sender);
-//    am.set(AlarmManager.RTC, new Date().getTime() + 2000, sender);
   }
 }
