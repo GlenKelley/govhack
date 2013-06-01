@@ -2,6 +2,7 @@ package org.govhack.vespene;
 
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
+import org.govhack.vespene.atlas.ProductDetail;
 import org.govhack.vespene.atlas.Search;
 import org.govhack.vespene.util.AsyncUrlFetcher;
 import org.joda.time.DateMidnight;
@@ -137,6 +138,11 @@ public class MainActivity extends Activity {
           }
           
           @Override
+          public void onProductDetails(String id, ProductDetail productDetail) {
+			// TODO Auto-generated method stub
+          }
+
+		@Override
           public void onError(Exception e) {
             Toast.makeText(getApplicationContext(), 
                 "ERROR", Toast.LENGTH_SHORT).show();

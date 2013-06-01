@@ -2,18 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@android:color/white" >
     
     <LinearLayout
         android:id="@+id/top_bar_holder" 
         android:layout_width="fill_parent"
         android:layout_height="50dp" >
         
+        <TextView
+            android:id="@+id/card_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="11dp" >
+            
+        </TextView>
+        
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/thumbnail_holder"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="200dp" >
         
     </FrameLayout>
@@ -25,7 +35,9 @@
         <LinearLayout
             android:id="@+id/text_description_holder"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="fill_parent"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp" >
 
         </LinearLayout>
     </RelativeLayout>
