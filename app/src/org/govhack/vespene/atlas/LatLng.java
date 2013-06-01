@@ -14,7 +14,7 @@ public class LatLng {
   }
   
   public String toAtlasString() {
-	  return String.format("%d,%d", latitude, longitude);
+	  return String.format("%f,%f", latitude, longitude);
   }
   
   public final static LatLng SYDNEY_CBD = new LatLng(-33.868706,151.207556);
