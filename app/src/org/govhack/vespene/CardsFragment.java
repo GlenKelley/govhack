@@ -3,6 +3,7 @@ package org.govhack.vespene;
 import android.app.ActionBar.OnMenuVisibilityListener;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,16 @@ public class CardsFragment extends Fragment implements OnMenuVisibilityListener 
   @Override
   public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     Log.d(TAG, "onCreateView");
-   return root = (GridView) inflater.inflate(R.layout.gallery, container, false);
+    root = (GridView) inflater.inflate(R.layout.gallery, container, false);
+    
+    root.setNumColumns(Math.max(1, getScreenWidth() / 500));
+    return root;
+  }
+  
+  private int getScreenWidth() {
+    DisplayMetrics metrics = new DisplayMetrics();
+    activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    return metrics.widthPixels;
   }
   
   public void setAdapter(CardPagerAdapter pagerAdapter) {

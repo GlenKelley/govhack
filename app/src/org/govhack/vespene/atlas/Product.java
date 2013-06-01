@@ -13,18 +13,18 @@ public class Product {
 	  public final Category categoryId;
 	  public final String imageUrl;
 	  // TODO: perhaps also use "boundary" field also. Warning, sometimes is MULTIPOINT(..., ... ) etc.
-	  
+
 	  public final LatLng location;
 	  public final double locationKms;
-	  
+
 	  public final Date startDate;
 	  public final Date endDate;
 	  public final String openTimes;
 	  public final Address address;
 	  public final List<String> multimedia;
-	  
+
 	public Product(ProductHeader header, ProductDetail detail) {
-		this.id = header.id;
+		this.id = detail.id;
 		this.name = header.name;
 		this.description = header.description;
 		this.categoryId = header.categoryId;
@@ -41,8 +41,9 @@ public class Product {
 		this.url = detail.url;
 	}
 
+  @Override
   public String toString() {
     return name;
   }
-	  
+
 }

@@ -43,7 +43,6 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 	@Override
 	public void onConnected(Bundle bundle) {
 		connected = true;
-		System.out.println("CONNECTED");
 	    client.requestLocationUpdates(request, locationListener);
 	}
 

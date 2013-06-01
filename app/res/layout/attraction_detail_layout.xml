@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_light" >
@@ -12,6 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:minHeight="36dp" >
 
         <TextView
@@ -101,16 +103,17 @@
             android:layout_marginLeft="8dp"
             android:text="Phone"
             android:textColor="@android:color/primary_text_light"
-            android:textSize="14dp"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/detail_phone"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
             android:layout_marginLeft="4dp"
             android:text="1234 5678"
-            android:textColor="@android:color/primary_text_light" />
+            android:textColor="@android:color/primary_text_light"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -126,17 +129,27 @@
             android:layout_marginLeft="8dp"
             android:text="Email"
             android:textColor="@android:color/primary_text_light"
-            android:textSize="14dp"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/detail_email"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
             android:layout_marginLeft="4dp"
             android:text="example@example.org"
-            android:textColor="@android:color/primary_text_light" />
+            android:textColor="@android:color/primary_text_light"
+            android:textSize="14sp" />
+
     </LinearLayout>
+
+	<fragment
+	    android:id="@+id/detail_map"
+	    android:name="com.google.android.gms.maps.MapFragment"
+	    android:layout_width="match_parent"
+	    android:layout_height="400dp"
+	    android:layout_marginTop="8dp" 
+	    map:mapType="normal"/>
 
 </LinearLayout>
 </ScrollView>

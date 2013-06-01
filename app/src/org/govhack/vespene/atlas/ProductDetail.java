@@ -73,6 +73,14 @@ public class ProductDetail {
 		  }
 	  }
 	  
+	  JSONObject address = null;
+	  if (!json.isNull("addresses")) {
+		  JSONArray addressesArray = Json.getArray(json, "addresses");
+		  if (addressesArray.length() > 0) {
+			  address = Json.getObjectAt(addressesArray, 0);
+		  }
+	  }
+	  
 	  return new ProductDetail(
 		Json.str(json, "productId"),
 		Json.str(json, "productName"),
@@ -81,7 +89,7 @@ public class ProductDetail {
         Json.str(json, "productCategoryDescription"),
         Json.str(json, "productDescription"),
         openTimes,
-        Address.parseJson(json, Json.getJson(json, "address")),
+        Address.parseJson(json, address),
         multimedia,
         email,
         phone,

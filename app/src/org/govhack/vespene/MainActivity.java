@@ -9,6 +9,7 @@ import org.joda.time.Days;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentManager.OnBackStackChangedListener;
@@ -33,37 +34,39 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.LocationListener;
 
-public class MainActivity extends Activity implements OnInitListener, LocationListener {  
-	
+public class MainActivity extends Activity implements OnInitListener, LocationListener {
+
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
-  
+
   private static final DateMidnight BEGINNING = new DateMidnight(2013, 4, 14);
 //  private static final String MP_API_TOKEN = "b84f696d81a182f5d327547dfa382648";
-  
+
   private static final String TAG = "Main";
 
 //  private MixpanelAPI mp;
-  
+
   private Atlas atlas = new Atlas(new AsyncUrlFetcher());
   private ProductList products = new ProductList(atlas);
   private TextToSpeech tts = null;
   private LocationTracker locationTracker = null;
-  
+  private Favourites favourites = new Favourites();
+
   private ImageFetcher images;
-  
+
   public static int dayCount() {
     DateMidnight today = new DateMidnight();
     return Days.daysBetween(BEGINNING, today).getDays();
   }
-  
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.i(TAG, "onCreate");
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
-    
+    getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
     getActionBar().setHomeButtonEnabled(true);
@@ -76,14 +79,14 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
         }
       }
     });
-    
+
 //    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
 //    mp.identify(Installation.id(this));
 //    if (Installation.wasNewInstallation()) {
 //      track("new-install");
 //    }
-    
-    track("app-create");    
+
+    track("app-create");
 //    tts = new TextToSpeech(this, this);
   }
 
@@ -100,7 +103,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
       track("app-launch-from-notification");
     }
   }
-  
+
   CardsFragment getCardsFragment() {
     FragmentManager fm = getFragmentManager();
 //    while (fm.getBackStackEntryCount() > 0) {
@@ -109,29 +112,29 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     return (CardsFragment) fm.findFragmentById(R.id.fragment_gallery);
     //gallery.showLast();
   }
-  
+
   @Override
   protected void onDestroy() {
     Log.d(TAG, "onDestroy");
     super.onDestroy();
   }
-  
+
   @Override
   protected void onStart() {
-    CardPagerAdapter cardAdapter = new CardPagerAdapter(this, images);
+    CardPagerAdapter cardAdapter = new CardPagerAdapter(this, favourites, images);
     getCardsFragment().setAdapter(cardAdapter);
-    
+
     //  maybe just make this a method that binds them together instead of a ctor...
     new SearchController(getApplicationContext(), products, cardAdapter);
-    
-    
+
+
     Log.d(TAG, "onStart");
     super.onStart();
     track("app-start");
     products.doSearch(new Search(LatLng.SYDNEY_CBD));
 
     locationTracker = new LocationTracker(this, this);
-    
+
 //	tts.setLanguage(Locale.US);
   }
 
@@ -140,25 +143,25 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 	 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 	 products.doSearch(new Search(latLng));
   }
-  
+
   @Override
   protected void onStop() {
     Log.d(TAG, "onStop");
 //    mp.flush();
     super.onStop();
   }
-    
+
   @Override
   public void onResume() {
     Log.d(TAG, "onResume");
     super.onResume();
   }
-  
+
   @Override
   protected void onSaveInstanceState(Bundle state) {
     super.onSaveInstanceState(state);
   }
-  
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     super.onCreateOptionsMenu(menu);
@@ -177,7 +180,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     track("options-menu-shown");
     return true;
   }
-  
+
   @Override
   public void onInit(int status) {
   }
@@ -225,10 +228,10 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     	  
     	return true;
       default:
-        return super.onOptionsItemSelected(item);        
+        return super.onOptionsItemSelected(item);
     }
   }
-  
+
   void track(String event, Object...objects) {
     JSONObject j = new JSONObject();
     try {
@@ -241,7 +244,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     if (BuildConfig.DEBUG) {
       Log.d("MP", event + ": " + j);
     } else {
-//      mp.track(event, j);            
+//      mp.track(event, j);
     }
   }
 }
