@@ -22,10 +22,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.LocationListener;
@@ -63,6 +66,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
+    getActionBar().setHomeButtonEnabled(true);
     final FragmentManager fragmentManager = getFragmentManager();
     fragmentManager.addOnBackStackChangedListener(new OnBackStackChangedListener() {
       @Override
@@ -161,6 +165,15 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     // Inflate the menu; this adds items to the action bar if it is present.
     Log.d(TAG, "onCreateOptionsMenu");
     getMenuInflater().inflate(R.menu.main, menu);
+    
+    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+    searchView.setOnSearchClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Log.e("Oleg", "onClick in search");
+		}
+	});
+    
     track("options-menu-shown");
     return true;
   }
@@ -173,7 +186,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        getFragmentManager().popBackStack();
+    	getFragmentManager().popBackStack();
         return true;
       case R.id.action_settings:
         // Display the fragment as the main content.
