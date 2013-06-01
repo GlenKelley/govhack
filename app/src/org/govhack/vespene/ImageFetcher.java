@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import org.apache.commons.io.IOUtils;
 import org.govhack.vespene.util.Util;
@@ -26,14 +25,14 @@ public class ImageFetcher {
     public String url;
     public byte[] bytes;
     public Bitmap bitmap;
-    
+
     ImageInfo(byte[] bytes, Bitmap bitmap, String url) {
       this.url = url;
       this.bytes = bytes;
       this.bitmap = bitmap;
     }
   }
-    
+
   /** Saves an image to file. */
   private class SaveTask extends AsyncTask<ImageInfo, Void, Void> {
     @Override
@@ -51,14 +50,14 @@ public class ImageFetcher {
       return null;
     }
   }
-  
+
   public interface ImageCb {
     void onImage(Bitmap bitmap);
   }
-  
+
   public static class ImageUpdater implements ImageCb {
     private final ImageView view;
-    
+
     public ImageUpdater(ImageView view) {
       this.view = view;
     }
@@ -69,11 +68,11 @@ public class ImageFetcher {
 
   private class FetchTask extends AsyncTask<String, Void, ImageInfo> {
     private ImageCb cb;
-    
+
     public FetchTask(ImageCb cb) {
       this.cb = cb;
     }
-    
+
     @Override
     protected ImageInfo doInBackground(String... params) {
       String url = params[0];
@@ -87,7 +86,7 @@ public class ImageFetcher {
         Log.i(TAG, "No file " + filename);
         // File not accessible, download instead.
       }
-      
+
       // Try to download
       try {
         ImageInfo downloaded = downloadImage(url);
@@ -98,19 +97,19 @@ public class ImageFetcher {
         return null;
       }
     }
-    
+
     @Override
     protected void onPostExecute(ImageInfo img) {
       if (img != null) cb.onImage(img.bitmap);
     }
   }
-  
+
   private final Context context;
 
   public ImageFetcher(Context context) {
     this.context = context;
   }
-  
+
   public void fetchImage(String url, ImageCb callback) {
     new FetchTask(callback).execute(url);
   }
@@ -134,7 +133,7 @@ public class ImageFetcher {
     return info;
   }
 
-  
+
   private ImageInfo imageFromStream(InputStream stream, String sourceUrl) throws IOException {
     ByteArrayOutputStream downloaded = new ByteArrayOutputStream(100 * 1000);
     IOUtils.copy(stream, downloaded);

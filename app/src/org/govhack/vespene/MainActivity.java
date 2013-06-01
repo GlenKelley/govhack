@@ -18,8 +18,6 @@ import android.app.FragmentManager;
 import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Context;
 import android.content.Intent;
-import android.database.AbstractCursor;
-import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -30,12 +28,8 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CursorAdapter;
 import android.widget.SearchView;
-import android.widget.SimpleCursorAdapter;
 
 import com.google.android.gms.location.LocationListener;
 
@@ -58,7 +52,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
   private Favourites favourites = new Favourites();
 
   private ImageFetcher images;
-  
+
   private boolean locationOverride = false;
   private LatLng myLastlatLng = null;
 
@@ -176,10 +170,10 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     // Inflate the menu; this adds items to the action bar if it is present.
     Log.d(TAG, "onCreateOptionsMenu");
     getMenuInflater().inflate(R.menu.main, menu);
-    
+
     SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
     searchView.setQueryHint("Search Location");
-    
+
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 		@Override
 		public boolean onQueryTextChange(String newText) {
@@ -192,13 +186,13 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 			try {
 				List<Address> address = gc.getFromLocationName(query, 1);
 				if (address.size() > 0) {
-					products.doSearch(new Search(new LatLng(address.get(0).getLatitude(), 
+					products.doSearch(new Search(new LatLng(address.get(0).getLatitude(),
 							address.get(0).getLongitude())));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			InputMethodManager im = (InputMethodManager) MainActivity.this
 		            .getSystemService(Context.INPUT_METHOD_SERVICE);
 		    im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
@@ -208,7 +202,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 			return true;
 		}
     });
-    
+
     track("options-menu-shown");
     return true;
   }
@@ -231,6 +225,8 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     	} else {
     		getFragmentManager().popBackStack();
     	}
+        return true;
+      case R.id.menu_favourites:
         return true;
       default:
         return super.onOptionsItemSelected(item);
