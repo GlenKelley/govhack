@@ -1,23 +1,23 @@
 package org.govhack.vespene;
 
-import org.govhack.vespene.BuildConfig;
-import org.govhack.vespene.R;
+import org.govhack.vespene.atlas.Atlas;
+import org.govhack.vespene.atlas.LatLng;
+import org.govhack.vespene.atlas.Search;
+import org.govhack.vespene.util.AsyncUrlFetcher;
 import org.joda.time.DateMidnight;
-import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.FragmentManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -32,6 +32,9 @@ public class MainActivity extends Activity {
   private static final String TAG = "Main";
 
   private MixpanelAPI mp;
+  
+  private Atlas atlas = new Atlas(new AsyncUrlFetcher());
+  private ProductList products = new ProductList(atlas);
   
   public static int dayCount() {
     DateMidnight today = new DateMidnight();
@@ -117,6 +120,31 @@ public class MainActivity extends Activity {
                 .hide(getFragmentManager().findFragmentById(R.id.fragment_gallery))
                 .addToBackStack("prefs")
                 .commit();
+        return true;
+      case R.id.search_test:
+        products.setListener(new ProductList.Listener() {
+          
+          @Override
+          public void onUpdate() {
+            Toast.makeText(getApplicationContext(), 
+                "YEAH", Toast.LENGTH_LONG).show();
+          }
+          
+          @Override
+          public void onSearching() {
+            Toast.makeText(getApplicationContext(), 
+                "Searching", Toast.LENGTH_SHORT).show();
+          }
+          
+          @Override
+          public void onError(Exception e) {
+            Toast.makeText(getApplicationContext(), 
+                "ERROR", Toast.LENGTH_SHORT).show();
+            throw new RuntimeException(e);
+            
+          }
+        });
+        products.doSearch(new Search(LatLng.SYDNEY_CBD));
         return true;
       default:
         return super.onOptionsItemSelected(item);        

@@ -64,7 +64,10 @@ public class Atlas {
     } else {
     	endpoint = "products";
     }
-    urlFetcher.fetch(svcUrl(endpoint, args), new JsonCallback(cb) {
+    String url = svcUrl(endpoint, args);
+    //url =  "http://govhack.atdw.com.au/productsearchservice.svc/products?key=278965474541&latlong=-27,153&dist=50&out=json";
+    
+    urlFetcher.fetch(url, new JsonCallback(cb) {
       @Override public void data(JSONObject data) throws JSONException {
         JSONArray list = data.getJSONArray("products");
         List<Product> products = Lists.newArrayList();
