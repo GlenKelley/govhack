@@ -1,31 +1,27 @@
 package org.govhack.vespene;
 
-import org.govhack.vespene.R;
+import java.util.List;
 
-import android.graphics.Paint;
+import org.govhack.vespene.atlas.Product;
+import org.govhack.vespene.util.Lists;
+import org.govhack.vespene.util.Preconditions;
+
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class CardPagerAdapter extends BaseAdapter {
   private static final String TAG = "CardPagerAdapter";
   
-  private static final int[] SADS = {
-    R.drawable.sad1, R.drawable.sad2, R.drawable.sad3, R.drawable.sad4 
-  };
-  
   private final MainActivity activity;
+  private List<Product> products = Lists.newArrayList();
   
   public CardPagerAdapter(MainActivity activity) {
     this.activity = activity;
@@ -33,7 +29,7 @@ public class CardPagerAdapter extends BaseAdapter {
   
   @Override
   public int getCount() {
-    return SADS.length;
+    return products.size();
 }
   @Override
   public Object getItem(int position) {
@@ -44,17 +40,20 @@ public class CardPagerAdapter extends BaseAdapter {
   public long getItemId(int position) {
       return 0;
   }
+  
+  public void setData(List<Product> products) {
+    products = Preconditions.checkNotNull(products);
+  }
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    ViewGroup cardView;
-    if (convertView == null) {  // if it's not recycled, initialize some attributes
-      cardView = inflateCard(parent);
-    } else {
-      cardView = populateView((ViewGroup) convertView);
-    }
-
-    return cardView;
+    
+    // TODO: reuse convertView where possible, check if this code is ok
+//    if (convertView != null) {  // if it's not recycled, initialize some attributes
+//      return populateView((ViewGroup) convertView);
+//    }
+    
+    return inflateCard(parent);
   }
   
   private ViewGroup inflateCard(ViewGroup parent) {
