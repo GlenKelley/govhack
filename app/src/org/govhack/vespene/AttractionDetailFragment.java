@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -43,13 +45,21 @@ public class AttractionDetailFragment extends Fragment {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setHasOptionsMenu(false);
     tfReg = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Medium.ttf");
     tfThin = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Thin.ttf");
   }
   
   @Override
+  public void onPrepareOptionsMenu(Menu menu) {
+    menu.findItem(R.id.menu_favourites).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
+    menu.findItem(R.id.menu_search).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
+  }
+  
+  @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, 
       Bundle savedInstanceState) {
+    getActivity().invalidateOptionsMenu();
     return inflater.inflate(R.layout.attraction_detail_layout, container, false);
   }
   
@@ -68,7 +78,6 @@ public class AttractionDetailFragment extends Fragment {
   @Override
   public void onStart() {
     super.onStart();  
-    final LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
     final LinearLayout detailContainer = (LinearLayout)getV(R.id.detail_container);
     final LinearLayout mapContainer = (LinearLayout)getV(R.id.detail_map_container);
     final Activity activity = getActivity();
@@ -81,6 +90,8 @@ public class AttractionDetailFragment extends Fragment {
 
     getTv(R.id.detail_place_address).setText(product.address.fullAddress);
     getTv(R.id.detail_place_address).setTypeface(tfThin);
+
+    getTv(R.id.detail_place_distance).setTypeface(tfThin);
 
     getTv(R.id.detail_description).setText(product.description);
     getTv(R.id.detail_description).setTypeface(tfThin);
