@@ -90,6 +90,10 @@ public class Atlas {
 	      }
 	    });
   }
+
+  public void gallery(Product product, final Callback<List<String>> cb) {
+	  cb.success(product.multimedia);
+  }
   static String svcUrl(String service, String args) {
     return URL_PREFIX + service + "?key=" + KEY + args + "&out=json";
   }

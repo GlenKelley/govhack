@@ -1,13 +1,15 @@
 package org.govhack.vespene.atlas;
 
 import java.util.Date;
+import java.util.List;
 
 public class Product {
 	  public final String id;
 	  public final String name;
 	  public final String description;
-	  public final String phoneNumber = null;
-	  public final String emailAddress = null;
+	  public final String phoneNumber;
+	  public final String emailAddress;
+	  public final String url;
 	  public final Category categoryId;
 	  public final String imageUrl;
 	  // TODO: perhaps also use "boundary" field also. Warning, sometimes is MULTIPOINT(..., ... ) etc.
@@ -19,27 +21,9 @@ public class Product {
 	  public final Date endDate;
 	  public final String openTimes;
 	  public final Address address;
+	  public final List<String> multimedia;
 	  
-	public Product(String id, String name, String description,
-			Category categoryId, String imageUrl, LatLng location,
-			double locationKms, Date startDate, Date endDate, String openTimes,
-			Address address) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.categoryId = categoryId;
-		this.imageUrl = imageUrl;
-		this.location = location;
-		this.locationKms = locationKms;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.openTimes = openTimes;
-		this.address = address;
-	}
-	
 	public Product(ProductHeader header, ProductDetail detail) {
-		super();
 		this.id = header.id;
 		this.name = header.name;
 		this.description = header.description;
@@ -51,6 +35,10 @@ public class Product {
 		this.endDate = detail.endDate;
 		this.openTimes = detail.openTimes;
 		this.address = detail.address;
+		this.multimedia = detail.multimedia;
+		this.phoneNumber = detail.phone;
+		this.emailAddress = detail.email;
+		this.url = detail.url;
 	}
 
   public String toString() {
