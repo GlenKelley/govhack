@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
-import org.govhack.vespene.atlas.ProductDetail;
 import org.govhack.vespene.atlas.Search;
 import org.govhack.vespene.util.AsyncUrlFetcher;
 import org.joda.time.DateMidnight;
@@ -22,7 +21,6 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
