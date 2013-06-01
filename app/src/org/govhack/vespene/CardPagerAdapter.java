@@ -17,7 +17,6 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class CardPagerAdapter extends BaseAdapter {
   private static final String TAG = "CardPagerAdapter";
@@ -84,7 +83,6 @@ public class CardPagerAdapter extends BaseAdapter {
     cardView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Toast.makeText(activity, "Clicked on Attraction", Toast.LENGTH_SHORT).show();
         AttractionDetailFragment detailFragment = new AttractionDetailFragment();
 
         detailFragment.setProduct(product);
