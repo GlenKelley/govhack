@@ -1,155 +1,166 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/detail_sections"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_light" >
-
-<LinearLayout 
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:background="@android:color/background_light"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:weightSum="3" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:minHeight="36dp" >
-
-        <TextView
-            android:id="@+id/detail_place_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="42dp"
-            android:text="Place Name"
-            android:textColor="@android:color/primary_text_light"
-            android:textSize="22dp"
-            android:typeface="normal" />
-
-        <ImageView
-            android:id="@+id/detail_place_favourite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:src="@drawable/star_empty" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp" >
-
-        <TextView
-            android:id="@+id/detail_place_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:maxLines="2"
-            android:maxWidth="200dp"
-            android:text="Address address address address address"
-            android:textColor="@android:color/secondary_text_dark"
-            android:textSize="14dp" />
-
-        <TextView
-            android:id="@+id/detail_place_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:layout_marginLeft="8dp"
-            android:text="1.2km"
-            android:textColor="@android:color/secondary_text_dark"
-            android:textSize="14dp" />
-
-        <ImageView
-            android:id="@+id/detail_place_direction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:src="@drawable/nav_arrow" />
-    </LinearLayout>
-
-    <Gallery
-        android:id="@+id/detail_gallery"
-        android:layout_width="match_parent"
-        android:layout_height="88dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginTop="6dp" />
-
-    <TextView
-        android:id="@+id/detail_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginRight="8dp"
-        android:text="With 270 wines and close to 100 cheeses, GPO Wine and Cheese Room presents a sophisticated European-style space, perfect for decadent appraisals. A large painting depicts a woman who oversees each scrumptious proceeding as sounds of content murmur from diners&apos; cheese-filled mouths."
-        android:textColor="@android:color/secondary_text_light" />
-
-    <LinearLayout
-        android:id="@+id/detail_layout_phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/detail_phone_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="Phone"
-            android:textColor="@android:color/primary_text_light"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/detail_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_marginLeft="4dp"
-            android:text="1234 5678"
-            android:textColor="@android:color/primary_text_light"
-            android:textSize="14sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/detail_layout_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/detail_email_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="Email"
-            android:textColor="@android:color/primary_text_light"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/detail_email"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_marginLeft="4dp"
-            android:text="example@example.org"
-            android:textColor="@android:color/primary_text_light"
-            android:textSize="14sp" />
-
-    </LinearLayout>
-
+	<ScrollView
+	 	android:id="@+id/detail_scroll"
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="2"
+	    android:background="@android:color/background_light" >
+	
+		<LinearLayout
+		    android:id="@+id/detail_container"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@android:color/background_light"
+		    android:orientation="vertical" >
+		
+		    <RelativeLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginTop="4dp"
+		        android:minHeight="36dp" >
+		
+		        <TextView
+		            android:id="@+id/detail_place_name"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentLeft="true"
+		            android:layout_alignParentRight="true"
+		            android:layout_centerVertical="true"
+		            android:layout_marginLeft="8dp"
+		            android:layout_marginRight="42dp"
+		            android:text="Place Name"
+		            android:textColor="@android:color/primary_text_light"
+		            android:textSize="22dp"
+		            android:typeface="normal" />
+		
+		        <ImageView
+		            android:id="@+id/detail_place_favourite"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentRight="true"
+		            android:layout_centerVertical="true"
+		            android:layout_marginRight="8dp"
+		            android:src="@drawable/star_empty" />
+		    </RelativeLayout>
+		
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="8dp"
+		        android:layout_marginRight="8dp" >
+		
+		        <TextView
+		            android:id="@+id/detail_place_address"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_gravity="center_vertical"
+		            android:maxLines="2"
+		            android:maxWidth="200dp"
+		            android:text="Address address address address address"
+		            android:textColor="@android:color/secondary_text_dark"
+		            android:textSize="14dp" />
+		
+		        <TextView
+		            android:id="@+id/detail_place_distance"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_gravity="top"
+		            android:layout_marginLeft="8dp"
+		            android:text="1.2km"
+		            android:textColor="@android:color/secondary_text_dark"
+		            android:textSize="14dp" />
+		
+		        <ImageView
+		            android:id="@+id/detail_place_direction"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_gravity="top"
+		            android:src="@drawable/nav_arrow" />
+		    </LinearLayout>
+		
+		    <Gallery
+		        android:id="@+id/detail_gallery"
+		        android:layout_width="match_parent"
+		        android:layout_height="88dp"
+		        android:layout_marginBottom="6dp"
+		        android:layout_marginTop="6dp" />
+		
+		    <TextView
+		        android:id="@+id/detail_description"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="8dp"
+		        android:layout_marginRight="8dp"
+		        android:text="With 270 wines and close to 100 cheeses, GPO Wine and Cheese Room presents a sophisticated European-style space, perfect for decadent appraisals. A large painting depicts a woman who oversees each scrumptious proceeding as sounds of content murmur from diners&apos; cheese-filled mouths."
+		        android:textColor="@android:color/secondary_text_light" />
+		
+		    <LinearLayout
+		        android:id="@+id/detail_layout_phone"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		
+		        <TextView
+		            android:id="@+id/detail_phone_label"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_marginLeft="8dp"
+		            android:text="Phone"
+		            android:textColor="@android:color/primary_text_light"
+		            android:textSize="14sp"
+		            android:textStyle="bold" />
+		
+		        <TextView
+		            android:id="@+id/detail_phone"
+		            android:layout_width="wrap_content"
+		            android:layout_height="24dp"
+		            android:layout_marginLeft="4dp"
+		            android:text="1234 5678"
+		            android:textColor="@android:color/primary_text_light"
+		            android:textSize="14sp" />
+		
+		    </LinearLayout>
+		
+		    <LinearLayout
+		        android:id="@+id/detail_layout_email"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" >
+		
+		        <TextView
+		            android:id="@+id/detail_email_label"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_marginLeft="8dp"
+		            android:text="Email"
+		            android:textColor="@android:color/primary_text_light"
+		            android:textSize="14sp"
+		            android:textStyle="bold" />
+		
+		        <TextView
+		            android:id="@+id/detail_email"
+		            android:layout_width="wrap_content"
+		            android:layout_height="24dp"
+		            android:layout_marginLeft="4dp"
+		            android:text="example@example.org"
+		            android:textColor="@android:color/primary_text_light"
+		            android:textSize="14sp" />
+		    </LinearLayout>
+		</LinearLayout>
+	</ScrollView>
+	
 	<fragment
 	    android:id="@+id/detail_map"
 	    android:name="com.google.android.gms.maps.MapFragment"
 	    android:layout_width="match_parent"
-	    android:layout_height="400dp"
-	    android:layout_marginTop="8dp" 
-	    map:mapType="normal"/>
+	    android:layout_height="0dp"
+	    android:layout_marginTop="8dp"
+	    android:layout_weight="4" />
 
 </LinearLayout>
-</ScrollView>
