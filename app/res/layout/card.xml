@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/top_bar_holder" 
         android:layout_width="fill_parent"
-        android:layout_height="50dp" >
+        android:layout_height="47dp" >
         
         <TextView
             android:id="@+id/card_title"
@@ -22,7 +22,7 @@
         
         <FrameLayout
             android:paddingLeft="10dp"
-            android:paddingTop="10dp"
+            android:paddingTop="6dp"
             android:paddingRight="10dp"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
@@ -36,39 +36,84 @@
         
     </RelativeLayout>
 
+    
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#ccc" />
     <FrameLayout
         android:id="@+id/thumbnail_holder"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_width="fill_parent"
+        android:layout_height="160dp"
         android:paddingLeft="1dp"
         android:paddingRight="1dp">
-        
     </FrameLayout>
+    <FrameLayout
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="#ccc" />
         
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="100dp" >
+        android:layout_height="170dp" >
         
         <TextView
             android:id="@+id/card_address"
-            android:layout_width="200dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="15dp"
             android:paddingTop="6dp"
-            android:textColor="@android:color/holo_blue_light" >
-        </TextView>
+            android:paddingBottom="6dp" 
+            android:textSize="20sp"/>
         
         <TextView
             android:id="@+id/description_text"
+            android:layout_marginRight="105dp"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:ellipsize="end"
             android:paddingLeft="15dp"
-            android:paddingTop="5dp"
+            android:paddingTop="0dp"
             android:paddingRight="15dp"
             android:paddingBottom="7dp"
             android:layout_below="@+id/card_address" >
         </TextView>
+                
+        <FrameLayout
+          android:id="@+id/distance_holder"
+          android:paddingTop="0dp"
+          android:paddingBottom="6dp"
+          android:layout_width="105dp"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true" 
+          android:layout_below="@+id/card_address" >
+          
+          <TextView
+            android:id="@+id/distance_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="120m"
+            />
+
+        </FrameLayout>
+        
+        <FrameLayout
+          android:paddingLeft="15dp"
+          android:paddingTop="0dp"
+          android:paddingRight="15dp"
+          android:paddingBottom="15dp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true" 
+          android:layout_below="@+id/distance_holder" >
+          
+          <ImageView
+            android:id="@+id/map_preview"
+            android:contentDescription="Map preview"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:background="#eee" />
+        </FrameLayout>
 
     </RelativeLayout>
 </LinearLayout>
