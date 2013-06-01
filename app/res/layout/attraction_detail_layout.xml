@@ -86,12 +86,22 @@
 		            android:src="@drawable/nav_arrow" />
 		    </LinearLayout>
 		
-		    <Gallery
-		        android:id="@+id/detail_gallery"
+		    <HorizontalScrollView
+		        android:id="@+id/detail_gallery_holder"
 		        android:layout_width="match_parent"
 		        android:layout_height="88dp"
 		        android:layout_marginBottom="6dp"
-		        android:layout_marginTop="6dp" />
+		        android:layout_marginTop="6dp"
+		        android:background="@android:color/background_light" >
+
+		        <LinearLayout
+		            android:id="@+id/details_gallery_linear"
+		            android:layout_width="wrap_content"
+		            android:layout_height="match_parent" >
+
+		        </LinearLayout>
+
+		    </HorizontalScrollView>
 		
 		    <TextView
 		        android:id="@+id/detail_description"
