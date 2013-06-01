@@ -69,12 +69,13 @@ public class CardPagerAdapter extends BaseAdapter {
     return populateView(cardView, product);
   }
   
-  private ViewGroup populateView(ViewGroup cardView, Product product) {
+  private ViewGroup populateView(ViewGroup cardView, final Product product) {
     cardView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         Toast.makeText(activity, "Clicked on Attraction", Toast.LENGTH_SHORT).show();
         AttractionDetailFragment detailFragment = new AttractionDetailFragment();
+        detailFragment.setProduct(product);
         activity.getFragmentManager().beginTransaction()
         	.add(android.R.id.content, detailFragment)
         	.hide(activity.getFragmentManager().findFragmentById(R.id.fragment_gallery))

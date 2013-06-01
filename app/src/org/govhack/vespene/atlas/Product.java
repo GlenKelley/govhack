@@ -7,6 +7,8 @@ public class Product {
   public final String id;
   public final String name;
   public final String description;
+  public final String phoneNumber = null;
+  public final String emailAddress = null;
   public final Category categoryId;
   public final String imageUrl;
   // TODO: perhaps also use "boundary" field also. Warning, sometimes is MULTIPOINT(..., ... ) etc.

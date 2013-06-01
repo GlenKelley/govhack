@@ -6,15 +6,18 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="36dp" >
+        android:layout_height="wrap_content"
+        android:minHeight="36dp" >
 
         <TextView
             android:id="@+id/detail_place_name"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
+            android:layout_marginRight="42dp"
             android:text="Place Name"
             android:textColor="@android:color/primary_text_light"
             android:textSize="22dp"
@@ -32,15 +35,18 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_marginLeft="8dp" >
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp" >
 
         <TextView
             android:id="@+id/detail_place_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Address address address"
+            android:maxLines="2"
+            android:maxWidth="200dp"
+            android:text="Address address address address address"
             android:textColor="@android:color/secondary_text_dark"
             android:textSize="14dp" />
 
@@ -48,7 +54,7 @@
             android:id="@+id/detail_place_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="top"
             android:layout_marginLeft="8dp"
             android:text="1.2km"
             android:textColor="@android:color/secondary_text_dark"
@@ -58,7 +64,7 @@
             android:id="@+id/detail_place_direction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="top"
             android:src="@drawable/nav_arrow" />
     </LinearLayout>
 
@@ -70,7 +76,7 @@
         android:layout_marginTop="6dp" />
 
     <TextView
-        android:id="@+id/detail_text"
+        android:id="@+id/detail_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -94,7 +100,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/detail_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
