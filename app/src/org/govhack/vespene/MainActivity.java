@@ -1,12 +1,17 @@
 package org.govhack.vespene;
 
+<<<<<<< Updated upstream
 import java.io.IOException;
+=======
+>>>>>>> Stashed changes
 import java.util.List;
 
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
+import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.atlas.Search;
 import org.govhack.vespene.util.AsyncUrlFetcher;
+import org.govhack.vespene.util.Preconditions;
 import org.joda.time.DateMidnight;
 import org.joda.time.Days;
 import org.json.JSONException;
@@ -22,6 +27,7 @@ import android.database.AbstractCursor;
 import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
+import android.hardware.GeomagneticField;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,11 +42,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CursorAdapter;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
+import android.view.ViewGroup;
 
 import com.google.android.gms.location.LocationListener;
 
-public class MainActivity extends Activity implements OnInitListener, LocationListener {
-
+public class MainActivity extends Activity implements OnInitListener {  
+	
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
 
@@ -57,6 +64,8 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
   private LocationTracker locationTracker = null;
   private Favourites favourites = new Favourites();
 
+  private CardPagerAdapter cardAdapter = null;
+  
   private ImageFetcher images;
   
   private boolean locationOverride = false;
@@ -129,7 +138,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 
   @Override
   protected void onStart() {
-    CardPagerAdapter cardAdapter = new CardPagerAdapter(this, favourites, images);
+    cardAdapter = new CardPagerAdapter(this, favourites, images);
     getCardsFragment().setAdapter(cardAdapter);
 
     //  maybe just make this a method that binds them together instead of a ctor...
@@ -144,11 +153,37 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 //	tts.setLanguage(Locale.US);
   }
 
-  @Override
-  public void onLocationChanged(Location location) {
-	 myLastlatLng = new LatLng(location.getLatitude(), location.getLongitude());
+  public void onLocationChanged(Location location, float bearing) {
+	 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+	 GeomagneticField geoField = new GeomagneticField(
+        Double.valueOf(location.getLatitude()).floatValue(),
+        Double.valueOf(location.getLongitude()).floatValue(),
+        Double.valueOf(location.getAltitude()).floatValue(),
+        System.currentTimeMillis()
+      );
+	 
+	 if (getCardsFragment() != null) {
+		 ViewGroup group = (ViewGroup) getCardsFragment().root;
+	
+		 List<Product> productList = products.getList();
+		 Preconditions.checkState(cardAdapter != null, "card adapter is null on location changed");
+		 for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
+			 View cardView = group.getChildAt(i);
+			 Product product = productList.get(i);
+			 if (product.location != null && location != null) {
+				 double bearingDegrees = latLng.bearingToDeg(product.location) + bearing + geoField.getDeclination();
+				 Log.w("glen", "" + i + ":\t" + bearingDegrees);
+				 double distanceMs = latLng.distanceTo(product.location);
+				 cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
+			 }
+		 }
+	 }
 	 if (!locationOverride) {
-		 products.doSearch(new Search(myLastlatLng));
+		 if (myLastlatLng == null || latLng.distanceTo(myLastlatLng) > 10) {
+			 myLastlatLng = new LatLng(location.getLatitude(), location.getLongitude());
+			 products.doSearch(new Search(latLng));
+		 }
 	 }
   }
 

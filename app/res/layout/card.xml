@@ -102,6 +102,12 @@
           android:layout_alignParentRight="true" 
           android:layout_below="@+id/card_address" >
           
+          <ImageView
+            android:id="@+id/compass"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/compass" />
+
           <TextView
             android:id="@+id/distance_text"
             android:layout_width="wrap_content"
