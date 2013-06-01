@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,9 +22,11 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AttractionDetailFragment extends Fragment {
@@ -122,6 +125,7 @@ public class AttractionDetailFragment extends Fragment {
     }
     
     GoogleMap map = mapFragment().getMap();
+    mapFragment().getView().setBackgroundColor(Color.WHITE);
     LatLng ll = product.location.realLatLng();
     map.addMarker(new MarkerOptions().position(ll).title(product.name));
     CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(ll, 16);
@@ -130,14 +134,23 @@ public class AttractionDetailFragment extends Fragment {
     map.setOnMapClickListener(new OnMapClickListener() {
       @Override
       public void onMapClick(LatLng arg0) {
-        sectionContainer.setWeightSum(6);
-        sectionContainer.requestLayout();
+        expandMap();
       }
     });
+//    map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+//      @Override
+//      public void onInfoWindowClick(Marker arg0) {
+//        // TODO Auto-generated method stub
+//        
+//      }
+//    });
     
     detailContainer.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        LinearLayout.LayoutParams lp = 
+            new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1);
+        mapFragment().getView().setLayoutParams(lp);
         sectionContainer.setWeightSum(3);
         sectionContainer.requestLayout();
       }
@@ -148,6 +161,15 @@ public class AttractionDetailFragment extends Fragment {
     return (MapFragment) getFragmentManager().findFragmentById(R.id.detail_map);
   }
   
+  private void expandMap() {
+    final LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
+    LinearLayout.LayoutParams lp = 
+        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 4);
+    mapFragment().getView().setLayoutParams(lp);
+    sectionContainer.setWeightSum(6);
+    sectionContainer.requestLayout();
+  }
+
   public void setProduct(Product product) {
     this.product = product;
   }
