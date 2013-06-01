@@ -12,7 +12,6 @@ public class Product {
   // TODO: perhaps also use "boundary" field also. Warning, sometimes is MULTIPOINT(..., ... ) etc.
   public final LatLng location;
   public final double locationKms;
-
   
   public Product(String id, String name, String description,
       Category categoryId, String imageUrl, LatLng location, double locationKms) {
