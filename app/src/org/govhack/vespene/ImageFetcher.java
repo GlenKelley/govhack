@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.apache.commons.io.IOUtils;
 import org.govhack.vespene.util.Util;
@@ -121,6 +122,7 @@ public class ImageFetcher {
   }
 
   private ImageInfo downloadImage(String url) throws IOException {
+	url = url.replace(" ", "%20");
     URL u = new URL(url);
     Log.i(TAG, "Downloading " + u);
     InputStream stream = u.openConnection().getInputStream();
