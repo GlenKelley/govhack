@@ -107,6 +107,7 @@ public class MainActivity extends Activity implements OnInitListener {
     Log.d(TAG, "onStart");
     super.onStart();
     track("app-start");
+    products.doSearch(new Search(LatLng.SYDNEY_CBD));
 //	tts.setLanguage(Locale.US);
   }
 
