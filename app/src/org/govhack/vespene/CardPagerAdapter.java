@@ -115,7 +115,8 @@ public class CardPagerAdapter extends BaseAdapter {
     TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
     addressText.setTypeface(tfThin);
 //    addressText.setTextSize(16.0f);
-    addressText.setText("123 Clarence St, Circular Quay");
+    String address = product.address.address;
+    addressText.setText(address);
     
     TextView distanceText = (TextView) cardView.findViewById(R.id.distance_text);
     distanceText.setTypeface(tfThin);

@@ -29,6 +29,8 @@ public class Address {
 			addressLine = Json.str(addressJson, "addressLine1");
 			latLng = new LatLng(Double.parseDouble(Json.str(addressJson, "geocodeGdaLatitude")), 
 	        		Double.parseDouble(Json.str(addressJson, "geocodeGdaLongitude")));
+		} else {
+			addressLine = Json.str(json, "suburbName");
 		}
 	    return new Address(
 	        Json.str(json, "suburbName"),
