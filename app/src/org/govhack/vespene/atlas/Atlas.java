@@ -59,10 +59,11 @@ public class Atlas {
     }
     
     String endpoint;
-    if (search.likeProducts) {
-    	endpoint = "products";
-    } else {
+    if (search.likeProductId != null) {
+    	args += "&productId=" + search.likeProductId;
     	endpoint = "mpl";
+    } else {
+    	endpoint = "products";
     }
     urlFetcher.fetch(svcUrl(endpoint, args), new JsonCallback(cb) {
       @Override public void data(JSONObject data) throws JSONException {

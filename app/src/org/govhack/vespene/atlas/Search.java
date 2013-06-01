@@ -14,10 +14,9 @@ public class Search {
    */
   public final EnumSet<Category> categories = EnumSet.noneOf(Category.class);
   
-  public final boolean likeProducts;
+  public String likeProductId;
   
-  public Search(LatLng location, boolean likeProducts) {
+  public Search(LatLng location) {
     this.location = location;
-    this.likeProducts = likeProducts;
   }
 }
