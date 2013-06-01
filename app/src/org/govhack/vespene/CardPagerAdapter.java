@@ -34,7 +34,8 @@ public class CardPagerAdapter extends BaseAdapter {
   @Override
   public int getCount() {
     return SADS.length;
-}
+  }
+
   @Override
   public Object getItem(int position) {
       return null;
@@ -86,13 +87,19 @@ public class CardPagerAdapter extends BaseAdapter {
     thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
     thumbnailHolder.addView(thumbnail); 
     
-    LinearLayout descriptionHolder = (LinearLayout) cardView.findViewById(R.id.text_description_holder);
-    TextView description = new TextView(activity);
+    TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
+    Typeface tf3 = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Black.ttf");
+    addressText.setTypeface(tf3);
+    addressText.setTextSize(16.0f);
+    addressText.setText("Circular Quay");
+    
+    TextView description =  (TextView) cardView.findViewById(R.id.description_text);
     Typeface tf2 = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Thin.ttf");
     description.setTypeface(tf2);
     description.setTextSize(14.0f);
-    description.setText("This is a description");
-    descriptionHolder.addView(description);  
+    description.setMaxLines(3);
+    description.setText("This is a description of Circular Quay where lots of awesome people live and " +
+    		"like to dance like a bunch of pretty and happy people. There lived a jolly person.");
     
     return cardView;
   }
