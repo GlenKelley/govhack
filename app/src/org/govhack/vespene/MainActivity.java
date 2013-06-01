@@ -1,5 +1,7 @@
 package org.govhack.vespene;
 
+import java.util.Locale;
+
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
 import org.govhack.vespene.atlas.ProductDetail;
@@ -15,6 +17,8 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +26,7 @@ import android.widget.Toast;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
-public class MainActivity extends Activity {  
+public class MainActivity extends Activity implements OnInitListener {  
   
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
@@ -36,6 +40,7 @@ public class MainActivity extends Activity {
   
   private Atlas atlas = new Atlas(new AsyncUrlFetcher());
   private ProductList products = new ProductList(atlas);
+  private TextToSpeech tts = null;
   
   public static int dayCount() {
     DateMidnight today = new DateMidnight();
@@ -57,6 +62,8 @@ public class MainActivity extends Activity {
       track("new-install");
     }
     track("app-create");
+    
+    tts = new TextToSpeech(this, this);
   }
 
   @Override
@@ -73,6 +80,15 @@ public class MainActivity extends Activity {
     }
   }
   
+  CardsFragment getCardsFragment() {
+    FragmentManager fm = getFragmentManager();
+//    while (fm.getBackStackEntryCount() > 0) {
+//      fm.popBackStackImmediate();
+//    }
+    return (CardsFragment) fm.findFragmentById(R.id.fragment_gallery);
+    //gallery.showLast();
+  }
+  
   @Override
   protected void onDestroy() {
     Log.d(TAG, "onDestroy");
@@ -81,9 +97,17 @@ public class MainActivity extends Activity {
   
   @Override
   protected void onStart() {
+    CardPagerAdapter cardAdapter = new CardPagerAdapter(this);
+    getCardsFragment().setAdapter(cardAdapter);
+    
+    //  maybe just make this a method that binds them together instead of a ctor...
+    new SearchController(getApplicationContext(), products, cardAdapter);
+    
+    
     Log.d(TAG, "onStart");
     super.onStart();
     track("app-start");
+	tts.setLanguage(Locale.US);
   }
 
   @Override
@@ -107,6 +131,10 @@ public class MainActivity extends Activity {
     track("options-menu-shown");
     return true;
   }
+  
+  @Override
+  public void onInit(int status) {
+  }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
@@ -123,33 +151,6 @@ public class MainActivity extends Activity {
                 .commit();
         return true;
       case R.id.search_test:
-        products.setListener(new ProductList.Listener() {
-          
-          @Override
-          public void onUpdate() {
-            Toast.makeText(getApplicationContext(), 
-                "YEAH " + products.getList(), Toast.LENGTH_LONG).show();
-          }
-          
-          @Override
-          public void onSearching() {
-            Toast.makeText(getApplicationContext(), 
-                "Searching", Toast.LENGTH_SHORT).show();
-          }
-          
-          @Override
-          public void onProductDetails(String id, ProductDetail productDetail) {
-			// TODO Auto-generated method stub
-          }
-
-		@Override
-          public void onError(Exception e) {
-            Toast.makeText(getApplicationContext(), 
-                "ERROR", Toast.LENGTH_SHORT).show();
-            throw new RuntimeException(e);
-            
-          }
-        });
         products.doSearch(new Search(LatLng.SYDNEY_CBD));
         return true;
       default:

@@ -22,15 +22,21 @@ public class Address {
 		this.latLng = latLng;
 	}
 
-	public Address(JSONObject json, JSONObject addressJson) {
-	    this(
+	public static Address parseJson(JSONObject json, JSONObject addressJson) {
+		LatLng latLng = null;
+		String addressLine = null;
+		if (addressJson != null) {
+			addressLine = Json.str(addressJson, "addressLine1");
+			latLng = new LatLng(Double.parseDouble(Json.str(addressJson, "geocodeGdaLatitude")), 
+	        		Double.parseDouble(Json.str(addressJson, "geocodeGdaLongitude")));
+		}
+	    return new Address(
 	        Json.str(json, "suburbName"),
 	        Json.str(json, "cityName"),
 	        Json.str(json, "stateName"),
 	        Json.str(json, "countryName"),
-	        Json.str(addressJson, "addressLine1"),
-	        new LatLng(Double.parseDouble(Json.str(addressJson, "geocodeGdaLatitude")), 
-	        		Double.parseDouble(Json.str(addressJson, "geocodeGdaLongitude")))
+	        addressLine,
+	        latLng
 	        );
 	  }
 	

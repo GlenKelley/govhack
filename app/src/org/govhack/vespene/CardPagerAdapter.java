@@ -1,31 +1,28 @@
 package org.govhack.vespene;
 
-import org.govhack.vespene.R;
+import java.util.List;
 
-import android.graphics.Paint;
+import org.govhack.vespene.atlas.Product;
+import org.govhack.vespene.util.Lists;
+import org.govhack.vespene.util.Preconditions;
+
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class CardPagerAdapter extends BaseAdapter {
   private static final String TAG = "CardPagerAdapter";
-  
-  private static final int[] SADS = {
-    R.drawable.sad1, R.drawable.sad2, R.drawable.sad3, R.drawable.sad4 
-  };
-  
+
   private final MainActivity activity;
+  private List<Product> products = Lists.newArrayList();
   
   public CardPagerAdapter(MainActivity activity) {
     this.activity = activity;
@@ -33,7 +30,7 @@ public class CardPagerAdapter extends BaseAdapter {
   
   @Override
   public int getCount() {
-    return SADS.length;
+    return products.size();
   }
 
   @Override
@@ -45,23 +42,34 @@ public class CardPagerAdapter extends BaseAdapter {
   public long getItemId(int position) {
       return 0;
   }
+  
+  public void setData(List<Product> products) {
+
+    Log.w("DAN", "setData " + products.size());
+    this.products = Preconditions.checkNotNull(products);
+    notifyDataSetChanged();
+  }
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    ViewGroup cardView;
-    if (convertView == null) {  // if it's not recycled, initialize some attributes
-      cardView = inflateCard(parent);
-    } else {
-      cardView = (ViewGroup) convertView;
-    }
 
-    return cardView;
+    Log.w("DAN", "getView " + position);
+    // TODO: reuse convertView where possible, check if this code is ok
+//    if (convertView != null) {  // if it's not recycled, initialize some attributes
+//      return populateView((ViewGroup) convertView);
+//    }
+    
+    return inflateCard(parent, products.get(position));
   }
   
-  private ViewGroup inflateCard(ViewGroup parent) {
+  private ViewGroup inflateCard(ViewGroup parent, Product product) {
     ViewGroup cardView = 
         (ViewGroup) activity.getLayoutInflater().inflate(R.layout.card, parent, false);
     
+    return populateView(cardView, product);
+  }
+  
+  private ViewGroup populateView(ViewGroup cardView, Product product) {
     cardView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -79,11 +87,11 @@ public class CardPagerAdapter extends BaseAdapter {
     Typeface tf = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Bold.ttf");
     titleText.setTypeface(tf);
     titleText.setTextSize(20.0f);
-    titleText.setText("Attraction Title");
+    titleText.setText(product.name);
     
     FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
     ImageView thumbnail = new ImageView(activity);
-    thumbnail.setImageResource(SADS[1]);
+    thumbnail.setImageResource(R.drawable.sad1); // TODO: use image stuff
     thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
     thumbnailHolder.addView(thumbnail); 
     

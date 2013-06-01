@@ -12,37 +12,35 @@ import org.govhack.vespene.R;
 
 public class CardsFragment extends Fragment implements OnMenuVisibilityListener {
   private static final String TAG = "CardsFragment";
-  
+
   private MainActivity activity;
   private GridView root;
-  private CardPagerAdapter pagerAdapter;
 
   @Override
   public void onCreate (Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
     setMenuVisibility(true);
-    activity = (MainActivity) getActivity();    
-    
+    activity = (MainActivity) getActivity();
+
     activity.getActionBar().addOnMenuVisibilityListener(this);
   }
 
   @Override
   public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    pagerAdapter = new CardPagerAdapter(activity);
-
-    root = (GridView) inflater.inflate(R.layout.gallery, container, false);
-    root.setAdapter(pagerAdapter);
-    
-    return root;
+    return root = (GridView) inflater.inflate(R.layout.gallery, container, false);
   }
   
+  public void setAdapter(CardPagerAdapter pagerAdapter) {
+    root.setAdapter(pagerAdapter);
+  }
+
   @Override
   public void onStart() {
     super.onStart();
     Log.d(TAG, "onStart");
   }
-  
+
   @Override
   public void onResume () {
     super.onResume();
