@@ -5,13 +5,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import org.apache.commons.io.Charsets;
+
 public class Util {
   // adapted from internet
   public static String slurp(final InputStream is) throws IOException {
     final int bufferSize = 4096;
     final char[] buffer = new char[bufferSize];
     final StringBuilder out = new StringBuilder();
-    final Reader in = new InputStreamReader(is, "UTF-8");
+    final Reader in = new InputStreamReader(is, Charsets.UTF_8);
     try {
       while (true) {
         int size = in.read(buffer, 0, buffer.length);
