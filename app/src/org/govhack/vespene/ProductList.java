@@ -22,7 +22,7 @@ public class ProductList {
      * Will not be called twice in a row, will always be preceded by onSearching
      */
     void onUpdate();
-    
+
     void onError(Exception e);
   }
 
@@ -30,21 +30,21 @@ public class ProductList {
   private Listener listener;
   private final List<Product> products = Lists.newArrayList();
   private int currentSearchId = 0;
-  
+
   private final List<Product> view = Collections.unmodifiableList(products);
-  
+
   public ProductList(Atlas atlas) {
     this.atlas = atlas;
   }
-  
+
   public void setListener(Listener l) {
     this.listener = Preconditions.checkNotNull(l, "Null listener");
   }
-  
+
   public List<Product> getList() {
     return view;
   }
-  
+
   public void doSearch(Search search) {
     Preconditions.checkState(listener != null, "Listener not initialised");
     final int searchId = ++currentSearchId;
@@ -57,36 +57,39 @@ public class ProductList {
         }
         products.clear();
         listener.onUpdate();
-        
-        for (final ProductHeader header : result) {
-        	atlas.lookupProduct(header.id, new Callback<ProductDetail>() {
-				@Override
-				public void success(ProductDetail detail) {
-			        if (searchId != currentSearchId) {
-			            return;
-			        }
-			        Product product = new Product(header, detail);
-			        products.add(product);
-			        listener.onUpdate();
-				}
 
-				@Override
-				public void error(Exception e) {
-			        if (searchId != currentSearchId) {
-			            return;
-			        }
-			        //suppress errors because ATLAS does not contain detailed info
-			        //for all products
-			        System.err.println(e);
-				}
-			});
+        for (final ProductHeader header : result) {
+          if (header.imageUrl == null) {
+            continue;
+          }
+          atlas.lookupProduct(header.id, new Callback<ProductDetail>() {
+            @Override
+            public void success(ProductDetail detail) {
+              if (searchId != currentSearchId) {
+                return;
+              }
+              Product product = new Product(header, detail);
+              products.add(product);
+              listener.onUpdate();
+            }
+
+            @Override
+            public void error(Exception e) {
+              if (searchId != currentSearchId) {
+                return;
+              }
+              // suppress errors because ATLAS does not contain detailed info
+              // for all products
+              System.err.println(e);
+            }
+          });
         }
       }
       @Override public void error(Exception e) {
         if (searchId != currentSearchId) {
           return;
         }
-        
+
         listener.onError(e);
       }
     });

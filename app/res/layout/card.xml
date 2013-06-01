@@ -28,10 +28,10 @@
         	android:layout_height="wrap_content"
         	android:layout_alignParentRight="true" >
         	
-	        <ImageView
-	        	android:layout_width="30dp"
-	        	android:layout_height="30dp"
-	        	android:src="@drawable/star_empty" />
+          <ImageView
+            android:id="@+id/favourite_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
         </FrameLayout>
         
     </RelativeLayout>

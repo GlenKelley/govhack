@@ -26,17 +26,19 @@ public class CardPagerAdapter extends BaseAdapter {
 
 
   private final MainActivity activity;
+  private final Favourites favourites;
   private final ImageFetcher images;
   private List<Product> products = Lists.newArrayList();
-  
-  public CardPagerAdapter(MainActivity activity, ImageFetcher images) {
+
+  public CardPagerAdapter(MainActivity activity, Favourites favourites, ImageFetcher images) {
     this.activity = activity;
+    this.favourites = favourites;
     this.images = images;
-    
+
     tfReg = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Medium.ttf");
     tfThin = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Thin.ttf");
   }
-  
+
   @Override
   public int getCount() {
     return products.size();
@@ -46,12 +48,12 @@ public class CardPagerAdapter extends BaseAdapter {
   public Object getItem(int position) {
       return null;
   }
-  
+
   @Override
   public long getItemId(int position) {
       return 0;
   }
-  
+
   public void setData(List<Product> products) {
 
     Log.w("DAN", "setData " + products.size());
@@ -67,24 +69,24 @@ public class CardPagerAdapter extends BaseAdapter {
 //    if (convertView != null) {  // if it's not recycled, initialize some attributes
 //      return populateView((ViewGroup) convertView);
 //    }
-    
+
     return inflateCard(parent, products.get(position));
   }
-  
+
   private ViewGroup inflateCard(ViewGroup parent, Product product) {
-    ViewGroup cardView = 
+    ViewGroup cardView =
         (ViewGroup) activity.getLayoutInflater().inflate(R.layout.card, parent, false);
-    
+
     return populateView(cardView, product);
   }
-  
+
   private ViewGroup populateView(ViewGroup cardView, final Product product) {
     cardView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         Toast.makeText(activity, "Clicked on Attraction", Toast.LENGTH_SHORT).show();
         AttractionDetailFragment detailFragment = new AttractionDetailFragment();
-        
+
         detailFragment.setProduct(product);
         activity.getFragmentManager().beginTransaction()
         	.add(android.R.id.content, detailFragment)
@@ -94,12 +96,20 @@ public class CardPagerAdapter extends BaseAdapter {
       }
     });
 
+    final ImageView fav = (ImageView) cardView.findViewById(R.id.favourite_image);
+    updateFavImage(fav, favourites.isFave(product.id));
+    fav.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View v) {
+        updateFavImage(fav, favourites.toggleFave(product.id));
+      }
+    });
+
     TextView titleText = (TextView) cardView.findViewById(R.id.card_title);
     titleText.setTypeface(tfReg);
     titleText.setTextSize(20.0f);
     titleText.setMaxLines(1);
     titleText.setText(product.name);
-    
+
     FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
     ImageView thumbnail = new ImageView(activity);
     if (product.imageUrl != null) {
@@ -107,33 +117,37 @@ public class CardPagerAdapter extends BaseAdapter {
     }
     thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
     thumbnailHolder.addView(thumbnail);
-    
+
     ImageView map = (ImageView) cardView.findViewById(R.id.map_preview);
     images.fetchImage(mapPreviewUrl(product.location), new ImageUpdater(map));
-    
+
     TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
     addressText.setTypeface(tfThin);
 //    addressText.setTextSize(16.0f);
     String address = product.address.address;
     addressText.setText(address);
-    
+
     TextView distanceText = (TextView) cardView.findViewById(R.id.distance_text);
     distanceText.setTypeface(tfThin);
     distanceText.setText( ((int) (product.locationKms * 1000)) + "m");
-    
+
     TextView description =  (TextView) cardView.findViewById(R.id.description_text);
     description.setTypeface(tfThin);
     description.setTextSize(14.0f);
     description.setMaxLines(7);
     description.setText(product.description);
-    
+
     return cardView;
   }
-  
+
+  private void updateFavImage(ImageView view, boolean isFav) {
+    view.setImageResource(isFav ? R.drawable.star_full : R.drawable.star_empty);
+  }
+
   static String mapPreviewUrl(LatLng at) {
     String loc = at.toAtlasString();
-    return "http://maps.googleapis.com/maps/api/staticmap?center=" + loc 
-        + "&zoom=15&size=180x180&maptype=roadmap&markers=color:blue%7Clabel:X%7C" + loc 
+    return "http://maps.googleapis.com/maps/api/staticmap?center=" + loc
+        + "&zoom=15&size=180x180&maptype=roadmap&markers=color:blue%7Clabel:X%7C" + loc
         + "&sensor=false";
   }
 }
