@@ -4,6 +4,7 @@ import org.govhack.vespene.atlas.Product;
 
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -15,7 +16,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -48,6 +48,18 @@ public class AttractionDetailFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container, 
       Bundle savedInstanceState) {
     return inflater.inflate(R.layout.attraction_detail_layout, container, false);
+  }
+  
+  @Override
+  public void onDestroyView() {
+    try {
+      FragmentTransaction transaction = getFragmentManager()
+          .beginTransaction();
+      transaction.remove(mapFragment());
+      transaction.commit();
+    } catch (RuntimeException e) {
+    }
+    super.onDestroyView();
   }
   
   @Override
@@ -109,7 +121,7 @@ public class AttractionDetailFragment extends Fragment {
       getV(R.id.detail_layout_email).setVisibility(View.GONE);
     }
     
-    GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.detail_map)).getMap();
+    GoogleMap map = mapFragment().getMap();
     LatLng ll = product.location.realLatLng();
     map.addMarker(new MarkerOptions().position(ll).title(product.name));
     CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(ll, 16);
@@ -130,6 +142,10 @@ public class AttractionDetailFragment extends Fragment {
         sectionContainer.requestLayout();
       }
     });
+  }
+
+  private MapFragment mapFragment() {
+    return (MapFragment) getFragmentManager().findFragmentById(R.id.detail_map);
   }
   
   public void setProduct(Product product) {
