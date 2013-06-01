@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
-import org.govhack.vespene.atlas.ProductDetail;
 import org.govhack.vespene.atlas.Search;
 import org.govhack.vespene.util.AsyncUrlFetcher;
 import org.joda.time.DateMidnight;
@@ -22,7 +21,6 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -42,6 +40,8 @@ public class MainActivity extends Activity implements OnInitListener {
   private ProductList products = new ProductList(atlas);
   private TextToSpeech tts = null;
   
+  private ImageFetcher images;
+  
   public static int dayCount() {
     DateMidnight today = new DateMidnight();
     return Days.daysBetween(BEGINNING, today).getDays();
@@ -51,6 +51,7 @@ public class MainActivity extends Activity implements OnInitListener {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.i(TAG, "onCreate");
+    images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
     //getActionBar().setDisplayShowTitleEnabled(false);
     
@@ -61,6 +62,7 @@ public class MainActivity extends Activity implements OnInitListener {
     if (Installation.wasNewInstallation()) {
       track("new-install");
     }
+    
     track("app-create");
     
 //    tts = new TextToSpeech(this, this);
@@ -97,7 +99,7 @@ public class MainActivity extends Activity implements OnInitListener {
   
   @Override
   protected void onStart() {
-    CardPagerAdapter cardAdapter = new CardPagerAdapter(this);
+    CardPagerAdapter cardAdapter = new CardPagerAdapter(this, images);
     getCardsFragment().setAdapter(cardAdapter);
     
     //  maybe just make this a method that binds them together instead of a ctor...
