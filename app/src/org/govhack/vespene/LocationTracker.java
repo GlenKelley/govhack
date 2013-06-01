@@ -21,8 +21,9 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 	
 	public LocationTracker(Context context, LocationListener locationListener) {
 		request = LocationRequest.create();
-	    request.setInterval(30000); //30 seconds
-	    request.setFastestInterval(30000); //30 seconds
+	    request.setInterval(60000); //1min
+	    request.setFastestInterval(5000); //5sec
+	    request.setSmallestDisplacement(50); //50 meters
 	    
 		this.locationListener = locationListener;
 	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
@@ -42,6 +43,7 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 	@Override
 	public void onConnected(Bundle bundle) {
 		connected = true;
+		System.out.println("CONNECTED");
 	    client.requestLocationUpdates(request, locationListener);
 	}
 
