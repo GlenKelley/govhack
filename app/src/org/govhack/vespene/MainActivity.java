@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements OnInitListener {
     }
     track("app-create");
     
-    tts = new TextToSpeech(this, this);
+//    tts = new TextToSpeech(this, this);
   }
 
   @Override
