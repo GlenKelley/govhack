@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.govhack.vespene.util.AsyncUrlFetcher;
 import org.govhack.vespene.util.Callback;
+import org.govhack.vespene.util.Lists;
 import org.govhack.vespene.util.Util;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +55,7 @@ public class Atlas {
     urlFetcher.fetch(svcUrl("products", args), new JsonCallback(cb) {
       @Override public void data(JSONObject data) throws JSONException {
         JSONArray list = data.getJSONArray("products");
-        List<Product> products = new ArrayList<Product>();
+        List<Product> products = Lists.newArrayList();
         for (int i = 0; i < list.length(); i++) {
           products.add(new Product(list.getJSONObject(i)));
         }
@@ -81,7 +82,7 @@ public class Atlas {
 	    urlFetcher.fetch(svcUrl("mlp", args), new JsonCallback(cb) {
 	      @Override public void data(JSONObject data) throws JSONException {
 	          JSONArray list = data.getJSONArray("products");
-	          List<Product> products = new ArrayList<Product>();
+	          List<Product> products = Lists.newArrayList();
 	          for (int i = 0; i < list.length(); i++) {
 	            products.add(new Product(list.getJSONObject(i)));
 	          }
