@@ -20,7 +20,6 @@ public class ProductDetail {
 
   public ProductDetail(String id, String name, Date startDate, Date endDate,
 		String categoryDescription, String description, String openTimes, Address address) {
-	super();
 	this.id = id;
 	this.name = name;
 	this.startDate = startDate;

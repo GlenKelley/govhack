@@ -82,7 +82,7 @@ public class Atlas {
 	    urlFetcher.fetch(svcUrl("product", args), new JsonCallback(cb) {
 	      @Override public void data(JSONObject data) throws JSONException {
 	        JSONObject jsonObject = new JSONObject("product");
-	        ProductDetail productDetail = new ProductDetail(jsonObject);
+	        ProductDetail productDetail = ProductDetail.parseFromJson(jsonObject);
 	        cb.success(productDetail);
 	      }
 	    });
