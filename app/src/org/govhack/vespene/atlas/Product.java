@@ -28,21 +28,12 @@ public class Product {
 
   public Product(JSONObject json) {
     this(
-        str(json, "productId"),
-        str(json, "productName"),
-        str(json, "productDescription"),
-        Category.valueOf(str(json, "categoryId")),
-        str(json, "productImage"),
-        LatLng.parse(str(json, "boundary")),
-        Double.parseDouble(str(json, "distanceToLocation")));
+        Json.str(json, "productId"),
+        Json.str(json, "productName"),
+        Json.str(json, "productDescription"),
+        Category.valueOf(Json.str(json, "categoryId")),
+        Json.str(json, "productImage"),
+        LatLng.parse(Json.str(json, "boundary")),
+        Double.parseDouble(Json.str(json, "distanceToLocation")));
   }
-  
-  static String str(JSONObject json, String field) {
-    try {
-      return json.getString(field);
-    } catch (JSONException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
 }

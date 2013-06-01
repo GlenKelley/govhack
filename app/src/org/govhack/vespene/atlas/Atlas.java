@@ -1,5 +1,7 @@
 package org.govhack.vespene.atlas;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Atlas {
+	
+  public static final DateFormat ATLAS_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	
   static abstract class JsonCallback implements Callback<String> {
     final Callback<?> errorHandler;
     
@@ -52,7 +57,14 @@ public class Atlas {
     if (!search.categories.isEmpty()) {
       args += "&cats=" + Util.join(",", search.categories);
     }
-    urlFetcher.fetch(svcUrl("products", args), new JsonCallback(cb) {
+    
+    String endpoint;
+    if (search.likeProducts) {
+    	endpoint = "products";
+    } else {
+    	endpoint = "mpl";
+    }
+    urlFetcher.fetch(svcUrl(endpoint, args), new JsonCallback(cb) {
       @Override public void data(JSONObject data) throws JSONException {
         JSONArray list = data.getJSONArray("products");
         List<Product> products = Lists.newArrayList();
@@ -65,32 +77,16 @@ public class Atlas {
     });
   }
 
-  
-  public void lookupProduct(String productId, final Callback<Product> cb) {
+  public void lookupProduct(String productId, final Callback<ProductDetail> cb) {
 	    String args = "&productId="+ productId;
 	    urlFetcher.fetch(svcUrl("product", args), new JsonCallback(cb) {
 	      @Override public void data(JSONObject data) throws JSONException {
 	        JSONObject jsonObject = new JSONObject("product");
-	        Product product = new Product(jsonObject);
-	        cb.success(product);
+	        ProductDetail productDetail = new ProductDetail(jsonObject);
+	        cb.success(productDetail);
 	      }
 	    });
   }
-  
-  public void moreLike(String productId, LatLng location, int distanceKms, final Callback<List<Product>> cb) {
-	    String args = "&productId="+ productId +"&latlong=" + location.toAtlasString() + "&dist=" + distanceKms;
-	    urlFetcher.fetch(svcUrl("mlp", args), new JsonCallback(cb) {
-	      @Override public void data(JSONObject data) throws JSONException {
-	          JSONArray list = data.getJSONArray("products");
-	          List<Product> products = Lists.newArrayList();
-	          for (int i = 0; i < list.length(); i++) {
-	            products.add(new Product(list.getJSONObject(i)));
-	          }
-	          cb.success(products);
-	      }
-	    });
-  }
-  
   static String svcUrl(String service, String args) {
     return URL_PREFIX + service + "?key=" + KEY + args + "&out=json";
   }
