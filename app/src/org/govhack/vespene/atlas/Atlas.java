@@ -46,8 +46,13 @@ public class Atlas {
     this.urlFetcher = urlFetcher;
   }
 
-  void search(String str, final Callback<List<Product>> cb) {
-    String args = "&latlong=-27,153&dist=50";
+  void search(Search search, final Callback<List<Product>> cb) {
+    String args = 
+       // "&latlong=" + search.location.toAtlasString() +
+        "&dist=" + search.distancekms;
+    if (!search.categories.isEmpty()) {
+      args += "&cats="; // XXX XXX
+    }
     urlFetcher.fetch(svcUrl("products", args), new JsonCallback(cb) {
       @Override public void data(JSONObject data) throws JSONException {
         JSONArray list = data.getJSONArray("products");

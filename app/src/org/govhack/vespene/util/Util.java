@@ -25,4 +25,18 @@ public class Util {
     }
     return out.toString();
   }
+  
+  public static String join(String sep, Iterable<?> objects) {
+    StringBuilder b = new StringBuilder();
+    boolean first = true;
+    for (Object o : objects) {
+      if (!first) {
+        b.append(sep);
+      }
+      first = false;
+      
+      b.append(o);
+    }
+    return b.toString();
+  }
 }
