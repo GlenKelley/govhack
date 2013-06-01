@@ -2,6 +2,7 @@ package org.govhack.vespene;
 
 import java.util.List;
 
+import org.govhack.vespene.ImageFetcher.ImageUpdater;
 import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.util.Lists;
 import org.govhack.vespene.util.Preconditions;
@@ -14,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,10 +22,12 @@ public class CardPagerAdapter extends BaseAdapter {
   private static final String TAG = "CardPagerAdapter";
 
   private final MainActivity activity;
+  private final ImageFetcher images;
   private List<Product> products = Lists.newArrayList();
   
-  public CardPagerAdapter(MainActivity activity) {
+  public CardPagerAdapter(MainActivity activity, ImageFetcher images) {
     this.activity = activity;
+    this.images = images;
   }
   
   @Override
@@ -93,9 +95,13 @@ public class CardPagerAdapter extends BaseAdapter {
     
     FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
     ImageView thumbnail = new ImageView(activity);
-    thumbnail.setImageResource(R.drawable.sad1); // TODO: use image stuff
+    if (product.imageUrl != null) {
+      images.fetchImage(product.imageUrl, new ImageUpdater(thumbnail));
+    }
+    
+    //thumbnail.setImageBitmap(bm)
     thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
-    thumbnailHolder.addView(thumbnail); 
+    thumbnailHolder.addView(thumbnail);
     
     TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
     Typeface tf3 = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Black.ttf");

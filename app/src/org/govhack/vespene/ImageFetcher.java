@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
@@ -54,7 +53,17 @@ public class ImageFetcher {
   
   public interface ImageCb {
     void onImage(Bitmap bitmap);
-    void onNoImage();
+  }
+  
+  public static class ImageUpdater implements ImageCb {
+    private final ImageView view;
+    
+    public ImageUpdater(ImageView view) {
+      this.view = view;
+    }
+    @Override public void onImage(Bitmap bitmap) {
+      view.setImageBitmap(bitmap);
+    }
   }
 
   private class FetchTask extends AsyncTask<String, Void, ImageInfo> {
@@ -92,7 +101,6 @@ public class ImageFetcher {
     @Override
     protected void onPostExecute(ImageInfo img) {
       if (img != null) cb.onImage(img.bitmap);
-      else cb.onNoImage();
     }
   }
   
