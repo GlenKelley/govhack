@@ -1,14 +1,14 @@
-package com.danilatos.test.atlas;
+package org.govhack.vespene.atlas;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.govhack.vespene.util.AsyncUrlFetcher;
+import org.govhack.vespene.util.Callback;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.danilatos.test.AsyncUrlFetcher;
-import com.danilatos.test.Callback;
 
 
 public class Atlas {

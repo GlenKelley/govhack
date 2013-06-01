@@ -1,4 +1,4 @@
-package com.danilatos.test.atlas;
+package org.govhack.vespene.atlas;
 
 import org.json.JSONException;
 import org.json.JSONObject;

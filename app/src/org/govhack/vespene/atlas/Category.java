@@ -1,4 +1,4 @@
-package com.danilatos.test.atlas;
+package org.govhack.vespene.atlas;
 
 public enum Category {
   ACCOM,

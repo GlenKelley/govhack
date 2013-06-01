@@ -1,4 +1,4 @@
-package com.danilatos.test;
+package org.govhack.vespene.util;
 
 import java.io.IOException;
 import java.io.InputStream;

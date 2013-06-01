@@ -1,5 +1,7 @@
 package com.danilatos.test;
 
+import org.govhack.vespene.util.AsyncUrlFetcher;
+import org.govhack.vespene.util.SimpleCallback;
 import org.json.JSONArray;
 import org.json.JSONException;
 
