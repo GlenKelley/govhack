@@ -6,6 +6,7 @@ import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.atlas.Search;
 import org.govhack.vespene.util.Callback;
+import org.govhack.vespene.util.Lists;
 import org.govhack.vespene.util.Preconditions;
 
 public class ProductList {
@@ -16,7 +17,7 @@ public class ProductList {
 
   private final Atlas atlas;
   private Listener listener;
-
+  private final List<Product> products = Lists.newArrayList();
   public ProductList(Atlas atlas) {
     this.atlas = atlas;
   }
