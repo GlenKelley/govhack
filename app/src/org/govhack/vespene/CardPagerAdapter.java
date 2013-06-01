@@ -87,6 +87,7 @@ public class CardPagerAdapter extends BaseAdapter {
     Typeface tf = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Bold.ttf");
     titleText.setTypeface(tf);
     titleText.setTextSize(20.0f);
+    titleText.setMaxLines(1);
     titleText.setText(product.name);
     
     FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
