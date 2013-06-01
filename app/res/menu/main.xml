@@ -16,4 +16,14 @@
         android:id="@+id/search_test2"
         android:showAsAction="never"
         android:title="Search Test 2"/>
+    
+    <item android:id="@+id/menu_favourites"
+          android:icon="@drawable/star_full"
+          android:title="Favourites"
+          android:showAsAction="ifRoom|withText" />
+    
+    <item android:id="@+id/menu_search"
+          android:icon="@android:drawable/ic_menu_search"
+          android:title="Search"
+          android:showAsAction="ifRoom|withText" />
 </menu>

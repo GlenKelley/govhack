@@ -19,8 +19,14 @@ import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -159,6 +165,25 @@ public class MainActivity extends Activity implements OnInitListener {
       case R.id.search_test2:
         products.doSearch(new Search(LatLng.CANBERRA));
         return true;
+      case R.id.menu_search:
+//    	PopupWindow searchPopup = new PopupWindow(this);
+//    	  
+//    	EditText searchBox = new EditText(this);
+//    	searchBox.setTextSize(14.0f);
+//    	  
+//    	LinearLayout popupLayout = new LinearLayout(this);
+//    	popupLayout.addView(searchBox, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+//    	popupLayout.setPadding(30, 30, 30, 30);
+//    	
+//    	searchPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.search_background));
+//    	searchPopup.setWidth((int) getResources().getDimension(R.dimen.search_width));
+//    	searchPopup.setHeight((int) getResources().getDimension(R.dimen.search_height));
+//    	searchPopup.setFocusable(true);
+//    	searchPopup.setContentView(popupLayout);
+//    	searchPopup.showAtLocation(findViewById(R.id.menu_search), Gravity.TOP, 0, 
+//    			(int) getResources().getDimension(R.dimen.search_vertical_offset));
+    	  
+    	return true;
       default:
         return super.onOptionsItemSelected(item);        
     }
