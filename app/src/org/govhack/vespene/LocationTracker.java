@@ -107,7 +107,7 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 	@Override
 	public void onSensorChanged(SensorEvent event) {	
 		long now = System.currentTimeMillis();
-		if (now > lastSent + 300) {	
+		if (now > lastSent + 600) {	
 			float[] I = new float[9];
 			float[] R = new float[9];
 			float[] orientation = new float[3];
