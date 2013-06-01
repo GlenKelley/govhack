@@ -66,26 +66,30 @@ public class CardPagerAdapter extends BaseAdapter {
       public void onClick(View v) {
         Toast.makeText(activity, "Clicked on Attraction", Toast.LENGTH_SHORT).show();
         AttractionDetailFragment detailFragment = new AttractionDetailFragment();
-        activity.getFragmentManager().beginTransaction().add(android.R.id.content, detailFragment)
-        	.hide(activity.getFragmentManager().findFragmentById(R.id.fragment_gallery)).commit();
+        activity.getFragmentManager().beginTransaction()
+        	.add(android.R.id.content, detailFragment)
+        	.hide(activity.getFragmentManager().findFragmentById(R.id.fragment_gallery))
+        	.addToBackStack("prefs")
+        	.commit();
       }
     });
 
-    LinearLayout topBarHolder = (LinearLayout) cardView.findViewById(R.id.top_bar_holder);
-    TextView text = new TextView(activity);
-    text.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
-    text.setTextSize(20.0f);
-    text.setText("Attraction Title");
-    topBarHolder.addView(text);  
+    TextView titleText = (TextView) cardView.findViewById(R.id.card_title);
+    Typeface tf = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Bold.ttf");
+    titleText.setTypeface(tf);
+    titleText.setTextSize(20.0f);
+    titleText.setText("Attraction Title");
     
     FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
     ImageView thumbnail = new ImageView(activity);
     thumbnail.setImageResource(SADS[1]);
-    thumbnail.setScaleType(ImageView.ScaleType.FIT_CENTER);
+    thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
     thumbnailHolder.addView(thumbnail); 
     
     LinearLayout descriptionHolder = (LinearLayout) cardView.findViewById(R.id.text_description_holder);
     TextView description = new TextView(activity);
+    Typeface tf2 = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Thin.ttf");
+    description.setTypeface(tf2);
     description.setTextSize(14.0f);
     description.setText("This is a description");
     descriptionHolder.addView(description);  
