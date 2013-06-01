@@ -9,10 +9,12 @@ import org.joda.time.Days;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
@@ -21,8 +23,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends Activity implements OnInitListener {  
-  
+import com.google.android.gms.location.LocationListener;
+
+public class MainActivity extends Activity implements OnInitListener, LocationListener {  
+	
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
   
@@ -36,6 +40,7 @@ public class MainActivity extends Activity implements OnInitListener {
   private Atlas atlas = new Atlas(new AsyncUrlFetcher());
   private ProductList products = new ProductList(atlas);
   private TextToSpeech tts = null;
+  private LocationTracker locationTracker = null;
   
   private ImageFetcher images;
   
@@ -50,7 +55,8 @@ public class MainActivity extends Activity implements OnInitListener {
     Log.i(TAG, "onCreate");
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
-    
+    getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
     final FragmentManager fragmentManager = getFragmentManager();
@@ -69,12 +75,11 @@ public class MainActivity extends Activity implements OnInitListener {
 //      track("new-install");
 //    }
     
-    track("app-create");
-    
+    track("app-create");    
 //    tts = new TextToSpeech(this, this);
   }
 
-  @Override
+@Override
   protected void onNewIntent(Intent i) {
     Log.i(TAG, "New intent: " + i.getAction());
     if (ACTION_LATEST.equals(i.getAction())) {
@@ -116,9 +121,18 @@ public class MainActivity extends Activity implements OnInitListener {
     super.onStart();
     track("app-start");
     products.doSearch(new Search(LatLng.SYDNEY_CBD));
+
+    locationTracker = new LocationTracker(this, this);
+    
 //	tts.setLanguage(Locale.US);
   }
 
+  @Override
+  public void onLocationChanged(Location location) {
+	 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+	 products.doSearch(new Search(latLng));
+  }
+  
   @Override
   protected void onStop() {
     Log.d(TAG, "onStop");

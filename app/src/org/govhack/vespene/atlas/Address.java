@@ -9,6 +9,7 @@ public class Address {
 	public final String state;
 	public final String country;
 	public final String address;
+	public final String fullAddress;
 	public final LatLng latLng;
 	
 	public Address(String suburb, String city, String state, String country,
@@ -19,6 +20,7 @@ public class Address {
 		this.state = state;
 		this.country = country;
 		this.address = address;
+		this.fullAddress = address;
 		this.latLng = latLng;
 	}
 
@@ -29,6 +31,8 @@ public class Address {
 			addressLine = Json.str(addressJson, "addressLine1");
 			latLng = new LatLng(Double.parseDouble(Json.str(addressJson, "geocodeGdaLatitude")), 
 	        		Double.parseDouble(Json.str(addressJson, "geocodeGdaLongitude")));
+		} else {
+			addressLine = Json.str(json, "suburbName");
 		}
 	    return new Address(
 	        Json.str(json, "suburbName"),

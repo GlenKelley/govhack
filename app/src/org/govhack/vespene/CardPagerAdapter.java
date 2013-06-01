@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 public class CardPagerAdapter extends BaseAdapter {
   private static final String TAG = "CardPagerAdapter";
-  final Typeface tfBold;
+  final Typeface tfReg;
   final Typeface tfThin;
 
 
@@ -33,9 +33,8 @@ public class CardPagerAdapter extends BaseAdapter {
     this.activity = activity;
     this.images = images;
     
-    tfBold = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Bold.ttf");
+    tfReg = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Medium.ttf");
     tfThin = Typeface.createFromAsset(activity.getAssets(), "fonts/Roboto-Thin.ttf");
-
   }
   
   @Override
@@ -96,7 +95,7 @@ public class CardPagerAdapter extends BaseAdapter {
     });
 
     TextView titleText = (TextView) cardView.findViewById(R.id.card_title);
-    titleText.setTypeface(tfBold);
+    titleText.setTypeface(tfReg);
     titleText.setTextSize(20.0f);
     titleText.setMaxLines(1);
     titleText.setText(product.name);
@@ -115,7 +114,8 @@ public class CardPagerAdapter extends BaseAdapter {
     TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
     addressText.setTypeface(tfThin);
 //    addressText.setTextSize(16.0f);
-    addressText.setText("123 Clarence St, Circular Quay");
+    String address = product.address.address;
+    addressText.setText(address);
     
     TextView distanceText = (TextView) cardView.findViewById(R.id.distance_text);
     distanceText.setTypeface(tfThin);

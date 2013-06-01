@@ -4,11 +4,15 @@ import org.govhack.vespene.atlas.Product;
 
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -19,10 +23,15 @@ public class AttractionDetailFragment extends Fragment {
   };
 
   private Product product = null;
+  private Typeface tfBold;
+  private Typeface tfReg;
+  private Typeface tfThin;
     
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    tfReg = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Medium.ttf");
+    tfThin = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Thin.ttf");
   }
   
   @Override
@@ -33,25 +42,54 @@ public class AttractionDetailFragment extends Fragment {
   
   @Override
   public void onStart() {
-    super.onStart(); 
+    super.onStart();  
     ActionBar actionBar = getActivity().getActionBar();
     actionBar.setTitle(product.name);
-    actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
     actionBar.setDisplayHomeAsUpEnabled(true);
+    
     getTv(R.id.detail_place_name).setText(product.name);
-//    getTv(R.id.detail_place_address).setText(product.address);
+    getTv(R.id.detail_place_name).setTypeface(tfReg);
+
+    getTv(R.id.detail_place_address).setText(product.address.fullAddress);
+    getTv(R.id.detail_place_address).setTypeface(tfThin);
+
     getTv(R.id.detail_description).setText(product.description);
+    getTv(R.id.detail_description).setTypeface(tfThin);
+
+    getTv(R.id.detail_phone_label).setTypeface(tfBold);
+    getTv(R.id.detail_email_label).setTypeface(tfBold);
     
     if (product.phoneNumber != null) {
       getV(R.id.detail_layout_phone).setVisibility(View.VISIBLE);
-      getTv(R.id.detail_phone).setText(product.phoneNumber);
+      TextView tv = getTv(R.id.detail_phone);
+      tv.setTypeface(tfThin);
+      tv.setText(callLink(product.phoneNumber));
+      tv.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          String uri = "tel:" + product.phoneNumber.trim() ;
+          Intent intent = new Intent(Intent.ACTION_DIAL);
+          intent.setData(Uri.parse(uri));
+          startActivity(intent);
+        }
+      });
     } else {
       getV(R.id.detail_layout_phone).setVisibility(View.GONE);
     }
     
     if (product.emailAddress != null) {
       getV(R.id.detail_layout_email).setVisibility(View.VISIBLE);
-      getTv(R.id.detail_email).setText(product.phoneNumber);
+      TextView tv = getTv(R.id.detail_email);
+      tv.setText(emailLink(product.emailAddress));
+      tv.setTypeface(tfThin);
+      tv.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+              "mailto",product.emailAddress, null));
+          startActivity(intent);
+        }
+      });
     } else {
       getV(R.id.detail_layout_email).setVisibility(View.GONE);
     }
@@ -67,5 +105,13 @@ public class AttractionDetailFragment extends Fragment {
   
   private TextView getTv(int id) {
     return (TextView)getV(id);
+  }
+  
+  private Spanned callLink(String number) {
+    return Html.fromHtml(String.format("<a href=\"tel:%s\">%s</a>", number, number));
+  }
+  
+  private Spanned emailLink(String addr) {
+    return Html.fromHtml(String.format("<a href=\"mailto:%s\">%s</a>", addr, addr));
   }
 }
