@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
+
+import org.apache.commons.io.Charsets;
 
 public class Util {
   // adapted from internet
-  public static String slurp(final InputStream is) throws IOException {
+  public static String slurp(final InputStream is, Charset charset) throws IOException {
     final int bufferSize = 4096;
     final char[] buffer = new char[bufferSize];
     final StringBuilder out = new StringBuilder();
-    final Reader in = new InputStreamReader(is, "UTF-8");
+    final Reader in = new InputStreamReader(is, charset);
     try {
       while (true) {
         int size = in.read(buffer, 0, buffer.length);
