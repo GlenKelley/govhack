@@ -1,9 +1,6 @@
 package org.govhack.vespene;
 
-<<<<<<< Updated upstream
 import java.io.IOException;
-=======
->>>>>>> Stashed changes
 import java.util.List;
 
 import org.govhack.vespene.atlas.Atlas;
