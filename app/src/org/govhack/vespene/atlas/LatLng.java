@@ -12,4 +12,10 @@ public class LatLng {
     String[] bits = str.split(",");
     return new LatLng(Double.parseDouble(bits[0]), Double.parseDouble(bits[1]));
   }
+  
+  public String toAtlasString() {
+	  return String.format("%d,%d", latitude, longitude);
+  }
+  
+  public final static LatLng SYDNEY_CBD = new LatLng(-33.868706,151.207556);
 }

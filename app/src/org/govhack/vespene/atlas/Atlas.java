@@ -9,6 +9,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.govhack.vespene.atlas.LatLng;
+import org.govhack.vespene.atlas.Product;
+import org.govhack.vespene.atlas.Atlas.JsonCallback;
+
 
 
 public class Atlas {
@@ -39,15 +43,14 @@ public class Atlas {
   private static final String URL_PREFIX = "http://govhack.atdw.com.au/productsearchservice.svc/";
   private static final String KEY = "278965474541";
   
-  
   private final AsyncUrlFetcher urlFetcher;
 
   public Atlas(AsyncUrlFetcher urlFetcher) {
     this.urlFetcher = urlFetcher;
   }
 
-  void search(String str, final Callback<List<Product>> cb) {
-    String args = "&latlong=-27,153&dist=50";
+  void search(String str, LatLng location, int distanceKms, final Callback<List<Product>> cb) {
+    String args = "&latlong=" + location.toAtlasString() + "&dist=" + distanceKms;
     urlFetcher.fetch(svcUrl("products", args), new JsonCallback(cb) {
       @Override public void data(JSONObject data) throws JSONException {
         JSONArray list = data.getJSONArray("products");
@@ -60,7 +63,32 @@ public class Atlas {
       }
     });
   }
+
   
+  void lookupProduct(String productId, final Callback<Product> cb) {
+	    String args = "&productId="+ productId;
+	    urlFetcher.fetch(svcUrl("product", args), new JsonCallback(cb) {
+	      @Override public void data(JSONObject data) throws JSONException {
+	        JSONObject jsonObject = new JSONObject("product");
+	        Product product = new Product(jsonObject);
+	        cb.success(product);
+	      }
+	    });
+  }
+  
+  void moreLike(String productId, LatLng location, int distanceKms, final Callback<List<Product>> cb) {
+	    String args = "&productId="+ productId +"&latlong=" + location.toAtlasString() + "&dist=" + distanceKms;
+	    urlFetcher.fetch(svcUrl("mlp", args), new JsonCallback(cb) {
+	      @Override public void data(JSONObject data) throws JSONException {
+	          JSONArray list = data.getJSONArray("products");
+	          List<Product> products = new ArrayList<Product>();
+	          for (int i = 0; i < list.length(); i++) {
+	            products.add(new Product(list.getJSONObject(i)));
+	          }
+	          cb.success(products);
+	      }
+	    });
+  }
   static String svcUrl(String service, String args) {
     return URL_PREFIX + service + "?key=" + KEY + args + "&out=json";
   }
