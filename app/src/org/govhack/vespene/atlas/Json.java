@@ -25,6 +25,14 @@ public class Json {
 	}		
   }
   
+  static JSONObject getObjectAt(JSONArray json, int index) {
+	try {
+		return json.getJSONObject(index);
+	} catch (JSONException e) {
+	    throw new RuntimeException(e);
+	}		
+  }
+  
   static String strAt(JSONArray json, int index) {
 	try {
 		return json.getString(index);
