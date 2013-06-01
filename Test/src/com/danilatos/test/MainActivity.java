@@ -1,5 +1,8 @@
 package com.danilatos.test;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
