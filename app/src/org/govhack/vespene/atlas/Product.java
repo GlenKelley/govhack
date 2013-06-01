@@ -13,7 +13,6 @@ public class Product {
   // TODO: perhaps also use "nearest location" field.
   public final LatLng location;
   public final double locationKms;
-
   
   public Product(String id, String name, String description,
       Category categoryId, String imageUrl, LatLng location, double locationKms) {

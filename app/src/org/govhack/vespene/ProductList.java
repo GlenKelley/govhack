@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.Product;
+import org.govhack.vespene.atlas.ProductDetail;
 import org.govhack.vespene.atlas.Search;
 import org.govhack.vespene.util.Callback;
 import org.govhack.vespene.util.Lists;
@@ -19,6 +20,11 @@ public class ProductList {
      * Will not be called twice in a row, will always be preceded by onSearching
      */
     void onUpdate();
+
+    /**
+     * Will be called for each product in products, will always be preceded by onUpdate
+     */
+    void onProductDetails(String id, ProductDetail productDetail);
     
     void onError(Exception e);
   }
@@ -49,6 +55,26 @@ public class ProductList {
         products.clear();
         products.addAll(result);
         listener.onUpdate();
+        
+        for (final Product product : result) {
+        	atlas.lookupProduct(product.id, new Callback<ProductDetail>() {
+				@Override
+				public void success(ProductDetail result) {
+			        if (searchId != currentSearchId) {
+			            return;
+			        }
+			        listener.onProductDetails(product.id, result);
+				}
+
+				@Override
+				public void error(Exception e) {
+			        if (searchId != currentSearchId) {
+			            return;
+			        }
+			        listener.onError(e);
+				}
+			});
+        }
       }
       @Override public void error(Exception e) {
         if (searchId != currentSearchId) {
