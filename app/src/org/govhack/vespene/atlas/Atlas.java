@@ -44,7 +44,7 @@ public class Atlas {
     this.urlFetcher = urlFetcher;
   }
 
-  void search(Search search, final Callback<List<Product>> cb) {
+  public void search(Search search, final Callback<List<Product>> cb) {
     String args = 
         "&latlong=" + search.location.toAtlasString() +
         "&dist=" + search.distancekms;
@@ -65,7 +65,7 @@ public class Atlas {
   }
 
   
-  void lookupProduct(String productId, final Callback<Product> cb) {
+  public void lookupProduct(String productId, final Callback<Product> cb) {
 	    String args = "&productId="+ productId;
 	    urlFetcher.fetch(svcUrl("product", args), new JsonCallback(cb) {
 	      @Override public void data(JSONObject data) throws JSONException {
@@ -76,7 +76,7 @@ public class Atlas {
 	    });
   }
   
-  void moreLike(String productId, LatLng location, int distanceKms, final Callback<List<Product>> cb) {
+  public void moreLike(String productId, LatLng location, int distanceKms, final Callback<List<Product>> cb) {
 	    String args = "&productId="+ productId +"&latlong=" + location.toAtlasString() + "&dist=" + distanceKms;
 	    urlFetcher.fetch(svcUrl("mlp", args), new JsonCallback(cb) {
 	      @Override public void data(JSONObject data) throws JSONException {
