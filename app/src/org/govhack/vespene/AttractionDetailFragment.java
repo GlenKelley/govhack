@@ -39,7 +39,7 @@ public class AttractionDetailFragment extends Fragment {
     actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
     actionBar.setDisplayHomeAsUpEnabled(true);
     getTv(R.id.detail_place_name).setText(product.name);
-//    getTv(R.id.detail_place_address).setText(product.address);
+    getTv(R.id.detail_place_address).setText(product.address.fullAddress);
     getTv(R.id.detail_description).setText(product.description);
     
     if (product.phoneNumber != null) {
