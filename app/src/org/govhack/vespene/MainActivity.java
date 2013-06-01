@@ -9,6 +9,7 @@ import org.joda.time.Days;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentManager.OnBackStackChangedListener;
@@ -54,7 +55,8 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     Log.i(TAG, "onCreate");
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
-    
+    getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
     final FragmentManager fragmentManager = getFragmentManager();
