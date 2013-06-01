@@ -4,6 +4,7 @@ import org.govhack.vespene.atlas.Product;
 
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -14,10 +15,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AttractionDetailFragment extends Fragment {
   
@@ -44,8 +51,22 @@ public class AttractionDetailFragment extends Fragment {
   }
   
   @Override
+  public void onDestroyView() {
+    try {
+      FragmentTransaction transaction = getFragmentManager()
+          .beginTransaction();
+      transaction.remove(mapFragment());
+      transaction.commit();
+    } catch (RuntimeException e) {
+    }
+    super.onDestroyView();
+  }
+  
+  @Override
   public void onStart() {
     super.onStart();  
+    final LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
+    final LinearLayout detailContainer = (LinearLayout)getV(R.id.detail_container);
     ActionBar actionBar = getActivity().getActionBar();
     actionBar.setTitle(product.name);
     actionBar.setDisplayHomeAsUpEnabled(true);
@@ -100,8 +121,31 @@ public class AttractionDetailFragment extends Fragment {
       getV(R.id.detail_layout_email).setVisibility(View.GONE);
     }
     
-    GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.detail_map)).getMap();
-    map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+    GoogleMap map = mapFragment().getMap();
+    LatLng ll = product.location.realLatLng();
+    map.addMarker(new MarkerOptions().position(ll).title(product.name));
+    CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(ll, 16);
+    map.moveCamera(cu);
+    map.setMyLocationEnabled(true);
+    map.setOnMapClickListener(new OnMapClickListener() {
+      @Override
+      public void onMapClick(LatLng arg0) {
+        sectionContainer.setWeightSum(6);
+        sectionContainer.requestLayout();
+      }
+    });
+    
+    detailContainer.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        sectionContainer.setWeightSum(3);
+        sectionContainer.requestLayout();
+      }
+    });
+  }
+
+  private MapFragment mapFragment() {
+    return (MapFragment) getFragmentManager().findFragmentById(R.id.detail_map);
   }
   
   public void setProduct(Product product) {
