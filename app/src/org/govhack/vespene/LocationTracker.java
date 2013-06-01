@@ -103,23 +103,22 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 		
 	}
 
+	long lastSent = 0;
 	@Override
-	public void onSensorChanged(SensorEvent event) {		
-		float[] I = new float[9];
-		float[] R = new float[9];
-		float[] orientation = new float[3];
-		if (SensorManager.getRotationMatrix(R, I, acc, mag)) {
-			float inclination = SensorManager.getInclination(I);
-			SensorManager.getOrientation(R, orientation);
-//			Log.w("glen", String.format("mag %f %f %f", mag[0], mag[1], mag[2]));
-//			Log.w("glen", String.format("acc %f %f %f", acc[0], acc[1], acc[2]));
-//			Log.w("glen", String.format("I %f %f %f %f %f %f %f %f %f", I[0], I[1], I[2], I[3], I[4], I[5], I[6], I[7], I[8]));
-//			Log.w("glen", String.format("R %f %f %f %f %f %f %f %f %f", R[0], R[1], R[2], R[3], R[4], R[5], R[6], R[7], R[8]));
-//			Log.w("glen", String.format("inclination %f", inclination));
-//			Log.w("glen", String.format("orient %f %f %f", orientation[0] / Math.PI * 180, orientation[1] / Math.PI * 180, orientation[2] / Math.PI * 180));
-			bearing = orientation[0];
-		} else {
-			Log.w("glen", "no inclination");
+	public void onSensorChanged(SensorEvent event) {	
+		long now = System.currentTimeMillis();
+		if (now > lastSent + 300) {	
+			float[] I = new float[9];
+			float[] R = new float[9];
+			float[] orientation = new float[3];
+			if (SensorManager.getRotationMatrix(R, I, acc, mag)) {
+				SensorManager.getOrientation(R, orientation);
+				bearing = (float)((orientation[0] / Math.PI + 1) * 180);
+				locationListener.onBearingChanged(bearing);
+				lastSent = now;
+			} else {
+				Log.w("glen", "no inclination");
+			}
 		}
 	}
 

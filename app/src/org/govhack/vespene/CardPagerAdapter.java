@@ -149,7 +149,7 @@ public class CardPagerAdapter extends BaseAdapter {
   public void updateLocation(double bearingDegrees, double distanceMs, View cardView) {
 	    TextView distanceText = (TextView) cardView.findViewById(R.id.distance_text);
 	    distanceText.setTypeface(tfThin);
-	    distanceText.setText( distanceMs + "m");
+	    distanceText.setText( (int)distanceMs + "m");
 	    
 	    ImageView compass = (ImageView) cardView.findViewById(R.id.compass);
 	    compass.setRotation((float)bearingDegrees);

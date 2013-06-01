@@ -66,7 +66,9 @@ public class MainActivity extends Activity implements OnInitListener {
   private ImageFetcher images;
   
   private boolean locationOverride = false;
-  private LatLng myLastlatLng = null;
+  private LatLng lastAnchorLocation = null;
+  private Location myLastLocation = null;
+  private LatLng myLastLatLng = null;
 
   public static int dayCount() {
     DateMidnight today = new DateMidnight();
@@ -150,38 +152,46 @@ public class MainActivity extends Activity implements OnInitListener {
 //	tts.setLanguage(Locale.US);
   }
 
-  public void onLocationChanged(Location location, float bearing) {
-	 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-	 GeomagneticField geoField = new GeomagneticField(
-        Double.valueOf(location.getLatitude()).floatValue(),
-        Double.valueOf(location.getLongitude()).floatValue(),
-        Double.valueOf(location.getAltitude()).floatValue(),
-        System.currentTimeMillis()
-      );
-	 
-	 if (getCardsFragment() != null) {
+  public void onBearingChanged(float bearing) {
+	 if (getCardsFragment() != null && myLastLocation != null) {
 		 ViewGroup group = (ViewGroup) getCardsFragment().root;
-	
+
+		 GeomagneticField geoField = new GeomagneticField(
+	        Double.valueOf(myLastLocation.getLatitude()).floatValue(),
+	        Double.valueOf(myLastLocation.getLongitude()).floatValue(),
+	        Double.valueOf(myLastLocation.getAltitude()).floatValue(),
+	        System.currentTimeMillis()
+	      );
+		 
 		 List<Product> productList = products.getList();
 		 Preconditions.checkState(cardAdapter != null, "card adapter is null on location changed");
+		 Log.w("glen", "bearing" + bearing);
 		 for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
 			 View cardView = group.getChildAt(i);
 			 Product product = productList.get(i);
-			 if (product.location != null && location != null) {
-				 double bearingDegrees = latLng.bearingToDeg(product.location) + bearing + geoField.getDeclination();
-				 Log.w("glen", "" + i + ":\t" + bearingDegrees);
-				 double distanceMs = latLng.distanceTo(product.location);
+			 if (product.location != null && myLastLatLng != null) {
+				 double bearingDegrees = myLastLatLng.bearingToDeg(product.location) - bearing - geoField.getDeclination();
+//				 Log.w("glen", "" + i + ":\t" + bearingDegrees);
+				 double distanceMs = myLastLatLng.distanceTo(product.location);
 				 cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
 			 }
 		 }
 	 }
+  }
+  
+  public void onLocationChanged(Location location, float bearing) {
+	 myLastLocation = location;
+	 myLastLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+	 
 	 if (!locationOverride) {
-		 if (myLastlatLng == null || latLng.distanceTo(myLastlatLng) > 10) {
-			 myLastlatLng = new LatLng(location.getLatitude(), location.getLongitude());
+		 LatLng latLng = new LatLng(myLastLocation.getLatitude(), myLastLocation.getLongitude());
+		 if (lastAnchorLocation == null || latLng.distanceTo(lastAnchorLocation) > 10) {
+			 lastAnchorLocation = myLastLatLng;
+			 Log.w("glen", "do search");
 			 products.doSearch(new Search(latLng));
 		 }
 	 }
+	 onBearingChanged(bearing);
   }
 
   @Override
@@ -257,8 +267,8 @@ public class MainActivity extends Activity implements OnInitListener {
     		locationOverride = false;
     		MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(false);
     		MainActivity.this.getActionBar().setTitle("Oz Explore");
-    		if (myLastlatLng != null) {
-    			products.doSearch(new Search(myLastlatLng));
+    		if (myLastLatLng != null) {
+    			products.doSearch(new Search(myLastLatLng));
     		}
     	} else {
     		getFragmentManager().popBackStack();
