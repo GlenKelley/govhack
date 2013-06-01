@@ -46,14 +46,14 @@ public class AttractionDetailFragment extends Fragment {
       getV(R.id.detail_layout_phone).setVisibility(View.VISIBLE);
       getTv(R.id.detail_phone).setText(product.phoneNumber);
     } else {
-      getV(R.id.detail_layout_phone).setVisibility(View.INVISIBLE);
+      getV(R.id.detail_layout_phone).setVisibility(View.GONE);
     }
     
     if (product.emailAddress != null) {
       getV(R.id.detail_layout_email).setVisibility(View.VISIBLE);
       getTv(R.id.detail_email).setText(product.phoneNumber);
     } else {
-      getV(R.id.detail_layout_email).setVisibility(View.INVISIBLE);
+      getV(R.id.detail_layout_email).setVisibility(View.GONE);
     }
   }
   

@@ -1,7 +1,5 @@
 package org.govhack.vespene;
 
-import java.util.Locale;
-
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
 import org.govhack.vespene.atlas.Search;
@@ -13,6 +11,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,8 +20,6 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 public class MainActivity extends Activity implements OnInitListener {  
   
@@ -53,9 +50,18 @@ public class MainActivity extends Activity implements OnInitListener {
     Log.i(TAG, "onCreate");
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
-    //getActionBar().setDisplayShowTitleEnabled(false);
     
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+    final FragmentManager fragmentManager = getFragmentManager();
+    fragmentManager.addOnBackStackChangedListener(new OnBackStackChangedListener() {
+      @Override
+      public void onBackStackChanged() {
+        if (fragmentManager.getBackStackEntryCount() < 1) {
+          getActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+      }
+    });
     
 //    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
 //    mp.identify(Installation.id(this));
@@ -120,6 +126,12 @@ public class MainActivity extends Activity implements OnInitListener {
     super.onStop();
   }
     
+  @Override
+  public void onResume() {
+    Log.d(TAG, "onResume");
+    super.onResume();
+  }
+  
   @Override
   protected void onSaveInstanceState(Bundle state) {
     super.onSaveInstanceState(state);
