@@ -16,6 +16,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+
 public class AttractionDetailFragment extends Fragment {
   
   private static final int[] SADS = {
@@ -59,6 +62,9 @@ public class AttractionDetailFragment extends Fragment {
     getTv(R.id.detail_phone_label).setTypeface(tfBold);
     getTv(R.id.detail_email_label).setTypeface(tfBold);
     
+    getTv(R.id.detail_place_address).setText(product.address.address);
+    getTv(R.id.detail_place_address).setTypeface(tfThin);
+    
     if (product.phoneNumber != null) {
       getV(R.id.detail_layout_phone).setVisibility(View.VISIBLE);
       TextView tv = getTv(R.id.detail_phone);
@@ -93,6 +99,9 @@ public class AttractionDetailFragment extends Fragment {
     } else {
       getV(R.id.detail_layout_email).setVisibility(View.GONE);
     }
+    
+    GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.detail_map)).getMap();
+    map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
   }
   
   public void setProduct(Product product) {
