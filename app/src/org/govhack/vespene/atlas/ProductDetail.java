@@ -58,7 +58,7 @@ public class ProductDetail {
         Json.str(json, "productCategoryDescription"),
         Json.str(json, "productDescription"),
         openTimes,
-        new Address(json, Json.getJson(json, "address")),
+        Address.parseJson(json, Json.getJson(json, "address")),
         multimedia);
   }
 	

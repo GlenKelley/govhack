@@ -1,5 +1,7 @@
 package org.govhack.vespene;
 
+import java.util.Locale;
+
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
 import org.govhack.vespene.atlas.ProductDetail;
@@ -15,6 +17,8 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +26,7 @@ import android.widget.Toast;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
-public class MainActivity extends Activity {  
+public class MainActivity extends Activity implements OnInitListener {  
   
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
@@ -36,6 +40,7 @@ public class MainActivity extends Activity {
   
   private Atlas atlas = new Atlas(new AsyncUrlFetcher());
   private ProductList products = new ProductList(atlas);
+  private TextToSpeech tts = null;
   
   public static int dayCount() {
     DateMidnight today = new DateMidnight();
@@ -57,6 +62,8 @@ public class MainActivity extends Activity {
       track("new-install");
     }
     track("app-create");
+    
+    tts = new TextToSpeech(this, this);
   }
 
   @Override
@@ -84,6 +91,7 @@ public class MainActivity extends Activity {
     Log.d(TAG, "onStart");
     super.onStart();
     track("app-start");
+	tts.setLanguage(Locale.US);
   }
 
   @Override
@@ -106,6 +114,10 @@ public class MainActivity extends Activity {
     getMenuInflater().inflate(R.menu.main, menu);
     track("options-menu-shown");
     return true;
+  }
+  
+  @Override
+  public void onInit(int status) {
   }
 
   @Override
@@ -139,7 +151,7 @@ public class MainActivity extends Activity {
           
           @Override
           public void onProductDetails(String id, ProductDetail productDetail) {
-			// TODO Auto-generated method stub
+          	tts.speak(productDetail.name, TextToSpeech.QUEUE_ADD, null);
           }
 
 		@Override
