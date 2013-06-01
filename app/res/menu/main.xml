@@ -11,4 +11,9 @@
         android:showAsAction="never"
         android:title="Search Test"/>
 
+     
+    <item
+        android:id="@+id/search_test2"
+        android:showAsAction="never"
+        android:title="Search Test 2"/>
 </menu>

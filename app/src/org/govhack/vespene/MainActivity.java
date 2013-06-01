@@ -153,6 +153,9 @@ public class MainActivity extends Activity implements OnInitListener {
       case R.id.search_test:
         products.doSearch(new Search(LatLng.SYDNEY_CBD));
         return true;
+      case R.id.search_test2:
+        products.doSearch(new Search(LatLng.CANBERRA));
+        return true;
       default:
         return super.onOptionsItemSelected(item);        
     }
