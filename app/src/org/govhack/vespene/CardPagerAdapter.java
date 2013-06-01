@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class CardPagerAdapter extends BaseAdapter {
   private static final String TAG = "CardPagerAdapter";
@@ -37,17 +40,17 @@ public class CardPagerAdapter extends BaseAdapter {
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    ImageView imageView;
+    ViewGroup cardView;
     if (convertView == null) {  // if it's not recycled, initialize some attributes
-        imageView = new ImageView(activity);
-        imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setPadding(8, 8, 8, 8);
+      cardView = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.card, parent, false);
+      LinearLayout topBarHolder = (LinearLayout) cardView.findViewById(R.id.top_bar_holder);
+      TextView text = new TextView(activity);
+      text.setText("bla bla");
+      topBarHolder.addView(text);
     } else {
-        imageView = (ImageView) convertView;
+      cardView = (ViewGroup) convertView;
     }
 
-    imageView.setImageResource(SADS[position]);
-    return imageView;
+    return cardView;
   }
 }
