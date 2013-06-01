@@ -18,6 +18,8 @@ import android.app.FragmentManager;
 import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Context;
 import android.content.Intent;
+import android.database.AbstractCursor;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -28,8 +30,12 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CursorAdapter;
 import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 
 import com.google.android.gms.location.LocationListener;
 
@@ -174,7 +180,8 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     getMenuInflater().inflate(R.menu.main, menu);
     
     SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-    searchView.setIconifiedByDefault(true);
+    searchView.setQueryHint("Search Location");
+    
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 		@Override
 		public boolean onQueryTextChange(String newText) {
@@ -199,6 +206,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 		    im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
 		            .getWindowToken(), 0);
 		    locationOverride = true;
+		    MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(true);
 			return true;
 		}
     });
@@ -217,6 +225,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
       case android.R.id.home:
     	if (getFragmentManager().getBackStackEntryCount() < 1) {
     		locationOverride = false;
+    		MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(false);
     		if (myLastlatLng != null) {
     			products.doSearch(new Search(myLastlatLng));
     		}
@@ -224,42 +233,6 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
     		getFragmentManager().popBackStack();
     	}
         return true;
-      case R.id.action_settings:
-        // Display the fragment as the main content.
-      SettingsFragment settings = new SettingsFragment();
-      PreferenceManager.getDefaultSharedPreferences(this)
-          .registerOnSharedPreferenceChangeListener(settings);
-      getFragmentManager().beginTransaction()
-                .add(android.R.id.content, settings)
-                .hide(getFragmentManager().findFragmentById(R.id.fragment_gallery))
-                .addToBackStack("prefs")
-                .commit();
-        return true;
-      case R.id.search_test:
-        products.doSearch(new Search(LatLng.SYDNEY_CBD));
-        return true;
-      case R.id.search_test2:
-        products.doSearch(new Search(LatLng.CANBERRA));
-        return true;
-      case R.id.menu_search:
-//    	PopupWindow searchPopup = new PopupWindow(this);
-//    	  
-//    	EditText searchBox = new EditText(this);
-//    	searchBox.setTextSize(14.0f);
-//    	  
-//    	LinearLayout popupLayout = new LinearLayout(this);
-//    	popupLayout.addView(searchBox, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-//    	popupLayout.setPadding(30, 30, 30, 30);
-//    	
-//    	searchPopup.setBackgroundDrawable(getResources().getDrawable(R.drawable.search_background));
-//    	searchPopup.setWidth((int) getResources().getDimension(R.dimen.search_width));
-//    	searchPopup.setHeight((int) getResources().getDimension(R.dimen.search_height));
-//    	searchPopup.setFocusable(true);
-//    	searchPopup.setContentView(popupLayout);
-//    	searchPopup.showAtLocation(findViewById(R.id.menu_search), Gravity.TOP, 0, 
-//    			(int) getResources().getDimension(R.dimen.search_vertical_offset));
-    	  
-    	return true;
       default:
         return super.onOptionsItemSelected(item);
     }
