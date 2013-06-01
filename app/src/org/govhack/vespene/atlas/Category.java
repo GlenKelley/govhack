@@ -11,5 +11,14 @@ public enum Category {
   HIRE,
   INFO,
   RESTAURANT,
-  TRANSPORT;
+  TRANSPORT, 
+  UNKNOWN;
+  
+  public static Category fromString(/*@Nullable*/ String str) {
+    if (str == null) {
+      return UNKNOWN;
+    }
+    
+    return valueOf(str);
+  }
 }

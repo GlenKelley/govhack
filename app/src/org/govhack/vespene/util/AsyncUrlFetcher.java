@@ -41,6 +41,7 @@ public class AsyncUrlFetcher {
     try {
       InputStream in = new BufferedInputStream(urlConnection.getInputStream());
       return Util.slurp(in, 
+          // XXX XXX move this out of this class
           /* atlas appears to be returning this... */
           Charsets.UTF_16LE);
     } finally {
