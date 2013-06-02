@@ -8,6 +8,7 @@ import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.util.Lists;
 import org.govhack.vespene.util.Preconditions;
 
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
@@ -64,9 +65,9 @@ public class CardPagerAdapter extends BaseAdapter {
   public View getView(int position, View convertView, ViewGroup parent) {
 
     Log.w("DAN", "getView " + position);
-    // TODO: reuse convertView where possible, check if this code is ok
+//    // TODO: reuse convertView where possible, check if this code is ok
 //    if (convertView != null) {  // if it's not recycled, initialize some attributes
-//      return populateView((ViewGroup) convertView);
+//      return populateView((ViewGroup) convertView, products.get(position));
 //    }
 
     return inflateCard(parent, products.get(position));
@@ -106,6 +107,7 @@ public class CardPagerAdapter extends BaseAdapter {
 
     FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
     ImageView thumbnail = new ImageView(activity);
+//    clearImage(thumbnail); // clear to prevent old junk from appearing
     if (product.imageUrl != null) {
       images.fetchImage(product.imageUrl, new ImageUpdater(thumbnail));
     }
@@ -113,6 +115,7 @@ public class CardPagerAdapter extends BaseAdapter {
     thumbnailHolder.addView(thumbnail);
 
     ImageView map = (ImageView) cardView.findViewById(R.id.map_preview);
+//    clearImage(map);
     images.fetchImage(mapPreviewUrl(product.location), new ImageUpdater(map));
 
     TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
@@ -133,6 +136,11 @@ public class CardPagerAdapter extends BaseAdapter {
     description.setText(product.description);
 
     return cardView;
+  }
+
+  private void clearImage(ImageView view) {
+    // TODO: figure out how to do this properly
+    view.setImageBitmap(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
   }
 
   public void updateLocation(double bearingDegrees, double distanceMs, View cardView) {
