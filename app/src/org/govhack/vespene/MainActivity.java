@@ -204,8 +204,7 @@ public class MainActivity extends Activity implements OnInitListener {
 //	tts.setLanguage(Locale.US);
   }
 
-  public void onBearingChanged(float bearing) {
-    if (true) return; // HACK
+  public void onBearingChanged(float bearing, boolean slow) {
     if (getCardsFragment() != null && myLastLocation != null) {
       ViewGroup group = getCardsFragment().root;
 
@@ -215,19 +214,22 @@ public class MainActivity extends Activity implements OnInitListener {
           myLastLocation.getAltitude()).floatValue(),
           System.currentTimeMillis());
 
-      List<Product> productList = products.getList();
-      Preconditions.checkState(cardAdapter != null,
-          "card adapter is null on location changed");
-      for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
-        View cardView = group.getChildAt(i);
-        Product product = productList.get(i);
-        if (product.location != null && myLastLatLng != null) {
-          double bearingDegrees = myLastLatLng.bearingToDeg(product.location)
-              - bearing + geoField.getDeclination();
-          double distanceMs = myLastLatLng.distanceTo(product.location);
-          cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
-        }
+      if (slow) {
+	      List<Product> productList = products.getList();
+	      Preconditions.checkState(cardAdapter != null,
+	          "card adapter is null on location changed");
+	      for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
+	        View cardView = group.getChildAt(i);
+	        Product product = productList.get(i);
+	        if (product.location != null && myLastLatLng != null) {
+	          double bearingDegrees = myLastLatLng.bearingToDeg(product.location)
+	              - bearing + geoField.getDeclination();
+	          double distanceMs = myLastLatLng.distanceTo(product.location);
+	          cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
+	        }
+	      }
       }
+      cardAdapter.updateDetailLocation(myLastLatLng, (float)(bearing - geoField.getDeclination()));
     }
   }
 
@@ -244,7 +246,7 @@ public class MainActivity extends Activity implements OnInitListener {
         products.doSearch(new Search(latLng));
       }
     }
-    onBearingChanged(bearing);
+    onBearingChanged(bearing, true);
   }
 
   @Override

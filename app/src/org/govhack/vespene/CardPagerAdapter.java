@@ -11,6 +11,7 @@ import org.govhack.vespene.util.Util;
 
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.hardware.GeomagneticField;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -81,11 +82,13 @@ public class CardPagerAdapter extends BaseAdapter {
     return populateView(cardView, product);
   }
 
+  AttractionDetailFragment activeDetailFragment = null;
   private ViewGroup populateView(ViewGroup cardView, final Product product) {
     cardView.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
         AttractionDetailFragment detailFragment = new AttractionDetailFragment();
+        activeDetailFragment = detailFragment;
         detailFragment.setFavourites(favourites);
 
         detailFragment.setProduct(product);
@@ -151,6 +154,12 @@ public class CardPagerAdapter extends BaseAdapter {
 
 	    ImageView compass = (ImageView) cardView.findViewById(R.id.compass);
 	    compass.setRotation((float)bearingDegrees);
+  }
+  
+  public void updateDetailLocation(LatLng loc, float bearing) {
+    if (activeDetailFragment != null) {
+    	activeDetailFragment.updateLocation(loc, bearing);
+    }
   }
 
   static String mapPreviewUrl(LatLng at) {

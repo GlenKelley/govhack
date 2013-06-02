@@ -1,7 +1,10 @@
 package org.govhack.vespene;
 
+import java.util.List;
+
 import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.util.Preconditions;
+import org.govhack.vespene.util.Util;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -11,6 +14,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.hardware.GeomagneticField;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -117,6 +121,7 @@ public class AttractionDetailFragment extends Fragment {
     getTv(R.id.detail_place_address).setTypeface(tfThin);
 
     getTv(R.id.detail_place_distance).setTypeface(tfThin);
+    getTv(R.id.detail_place_distance).setText(Util.formatDistance((int)product.locationKms * 1000));
 
     getTv(R.id.detail_description).setText(product.description);
     getTv(R.id.detail_description).setTypeface(tfThin);
@@ -244,6 +249,15 @@ public class AttractionDetailFragment extends Fragment {
 
   private MapFragment mapFragment() {
     return (MapFragment) getFragmentManager().findFragmentById(R.id.detail_map);
+  }
+  
+  public void updateLocation(org.govhack.vespene.atlas.LatLng latLng, float bearing) {
+	  if (product != null && product.location != null && getView() != null) {
+          double distanceMs = latLng.distanceTo(product.location);
+		  getTv(R.id.detail_place_distance).setText(Util.formatDistance((int)distanceMs));
+          double bearingDegrees = latLng.bearingToDeg(product.location) - bearing;
+          getV(R.id.detail_place_direction).setRotation((float)bearingDegrees);
+      }
   }
 
   private void expandMap() {

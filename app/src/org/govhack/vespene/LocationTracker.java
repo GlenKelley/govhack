@@ -102,18 +102,28 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 	}
 
 	long lastSent = 0;
+	long lastSent2 = 0;
 	float[] I = new float[9];
 	float[] R = new float[9];
 	float[] orientation = new float[3];
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		long now = System.currentTimeMillis();
-		if (now > lastSent + 10000) {
+
+		boolean detailUpdate = false;
+		if (now > lastSent2 + 300) {
+			detailUpdate = true;
+			lastSent2 = now;
+		}
+		boolean slow = now > lastSent + 10000;
+		if (slow || detailUpdate) {
 			if (SensorManager.getRotationMatrix(R, I, acc, mag)) {
 				SensorManager.getOrientation(R, orientation);
 				bearing = (float)((orientation[0] / Math.PI + 1) * 180);
-				locationListener.onBearingChanged(bearing);
-				lastSent = now;
+				locationListener.onBearingChanged(bearing, slow);
+				if (slow) {
+					lastSent = now;
+				}
 			}
 		}
 	}
