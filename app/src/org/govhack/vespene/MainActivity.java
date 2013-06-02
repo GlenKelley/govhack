@@ -75,6 +75,7 @@ public class MainActivity extends Activity implements OnInitListener {
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
     getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+    getActionBar().setTitle(getApplicationName(getApplication()) + ": Near Me");
 
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -83,7 +84,7 @@ public class MainActivity extends Activity implements OnInitListener {
     fragmentManager.addOnBackStackChangedListener(new OnBackStackChangedListener() {
       @Override
       public void onBackStackChanged() {
-        if (fragmentManager.getBackStackEntryCount() < 1) {
+        if (isRootFragment(fragmentManager)) {
           getActionBar().setDisplayHomeAsUpEnabled(false);
         }
       }
@@ -99,7 +100,7 @@ public class MainActivity extends Activity implements OnInitListener {
 //    tts = new TextToSpeech(this, this);
   }
 
-@Override
+  @Override
   protected void onNewIntent(Intent i) {
     Log.i(TAG, "New intent: " + i.getAction());
     if (ACTION_LATEST.equals(i.getAction())) {
@@ -115,11 +116,7 @@ public class MainActivity extends Activity implements OnInitListener {
 
   CardsFragment getCardsFragment() {
     FragmentManager fm = getFragmentManager();
-//    while (fm.getBackStackEntryCount() > 0) {
-//      fm.popBackStackImmediate();
-//    }
     return (CardsFragment) fm.findFragmentById(R.id.fragment_gallery);
-    //gallery.showLast();
   }
 
   @Override
@@ -214,39 +211,43 @@ public class MainActivity extends Activity implements OnInitListener {
     super.onCreateOptionsMenu(menu);
     // Inflate the menu; this adds items to the action bar if it is present.
     Log.d(TAG, "onCreateOptionsMenu");
-    getMenuInflater().inflate(R.menu.main, menu);
 
-    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-    searchView.setQueryHint("Search Location");
+    if (isRootFragment(getFragmentManager())) {
+      getMenuInflater().inflate(R.menu.main, menu);
+      SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+      searchView.setQueryHint("Search Location");
 
-    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-      @Override
-      public boolean onQueryTextChange(String newText) {
-        return false;
-      }
-
-      @Override
-      public boolean onQueryTextSubmit(String query) {
-        Geocoder gc = new Geocoder(MainActivity.this);
-        try {
-          List<Address> address = gc.getFromLocationName(query, 1);
-          if (address.size() > 0) {
-            products.doSearch(new Search(new LatLng(address.get(0)
-                .getLatitude(), address.get(0).getLongitude())));
+      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+          @Override
+          public boolean onQueryTextChange(String newText) {
+              return false;
           }
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
 
-        InputMethodManager im = (InputMethodManager) MainActivity.this
-            .getSystemService(Context.INPUT_METHOD_SERVICE);
-        im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
-            .getWindowToken(), 0);
-        locationOverride = true;
-        MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(true);
-        return true;
-      }
-    });
+          @Override
+          public boolean onQueryTextSubmit(String query) {
+              Geocoder gc = new Geocoder(MainActivity.this);
+              try {
+                  List<Address> address = gc.getFromLocationName(query, 1);
+                  if (address.size() > 0) {
+                      products.doSearch(new Search(new LatLng(address.get(0).getLatitude(),
+                              address.get(0).getLongitude())));
+                  }
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+
+              InputMethodManager im = (InputMethodManager) MainActivity.this
+                      .getSystemService(Context.INPUT_METHOD_SERVICE);
+              im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
+                      .getWindowToken(), 0);
+              locationOverride = true;
+              MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(true);
+              return true;
+          }
+      });
+    } else {
+      // No menu in non-root view
+    }
 
     track("options-menu-shown");
     return true;
@@ -264,7 +265,7 @@ public class MainActivity extends Activity implements OnInitListener {
         if (getFragmentManager().getBackStackEntryCount() < 1) {
           locationOverride = false;
           actionBar.setDisplayHomeAsUpEnabled(false);
-          actionBar.setTitle("Oz Explore - Near me");
+          actionBar.setTitle("Oz Explore: Near Me");
           if (myLastLatLng != null) {
             products.doSearch(new Search(myLastLatLng));
           }
@@ -296,5 +297,14 @@ public class MainActivity extends Activity implements OnInitListener {
     } else {
 //      mp.track(event, j);
     }
+  }
+
+  private boolean isRootFragment(final FragmentManager fragmentManager) {
+    return fragmentManager.getBackStackEntryCount() < 1;
+  }
+
+  public static String getApplicationName(Context context) {
+    int stringId = context.getApplicationInfo().labelRes;
+    return context.getString(stringId);
   }
 }

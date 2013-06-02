@@ -7,7 +7,7 @@
           android:actionViewClass="android.widget.SearchView" />
     
     <item android:id="@+id/menu_favourites"
-          android:icon="@drawable/star_full"
+          android:icon="@drawable/star_empty"
           android:title="Favourites"
-          android:showAsAction="ifRoom|withText" />
+          android:showAsAction="ifRoom" />
 </menu>
