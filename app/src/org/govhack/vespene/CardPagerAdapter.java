@@ -8,9 +8,7 @@ import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.util.Lists;
 import org.govhack.vespene.util.Preconditions;
 
-import android.graphics.Matrix;
 import android.graphics.Typeface;
-import android.location.Location;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
 public class CardPagerAdapter extends BaseAdapter {
@@ -87,6 +84,7 @@ public class CardPagerAdapter extends BaseAdapter {
       @Override
       public void onClick(View v) {
         AttractionDetailFragment detailFragment = new AttractionDetailFragment();
+        detailFragment.setFavourites(favourites);
 
         detailFragment.setProduct(product);
         activity.getFragmentManager().beginTransaction()
@@ -98,12 +96,7 @@ public class CardPagerAdapter extends BaseAdapter {
     });
 
     final ImageView fav = (ImageView) cardView.findViewById(R.id.favourite_image2);
-    updateFavImage(fav, favourites.isFave(product.header));
-    fav.setOnClickListener(new OnClickListener() {
-      @Override public void onClick(View v) {
-        updateFavImage(fav, favourites.toggleFave(product.header));
-      }
-    });
+    favourites.registerFavouriteToggle(fav, product.header);
 
     TextView titleText = (TextView) cardView.findViewById(R.id.card_title);
     titleText.setTypeface(tfReg);
@@ -132,7 +125,7 @@ public class CardPagerAdapter extends BaseAdapter {
     TextView distanceText = (TextView) cardView.findViewById(R.id.distance_text);
     distanceText.setTypeface(tfThin);
     updateLocation(40.0, product.locationKms * 1000, cardView);
-    
+
     TextView description =  (TextView) cardView.findViewById(R.id.description_text);
     description.setTypeface(tfThin);
     description.setTextSize(14.0f);
@@ -142,19 +135,15 @@ public class CardPagerAdapter extends BaseAdapter {
     return cardView;
   }
 
-  private void updateFavImage(ImageView view, boolean isFav) {
-    view.setImageResource(isFav ? R.drawable.star_full : R.drawable.star_empty);
-  }
-
   public void updateLocation(double bearingDegrees, double distanceMs, View cardView) {
 	    TextView distanceText = (TextView) cardView.findViewById(R.id.distance_text);
 	    distanceText.setTypeface(tfThin);
 	    distanceText.setText( (int)distanceMs + "m");
-	    
+
 	    ImageView compass = (ImageView) cardView.findViewById(R.id.compass);
 	    compass.setRotation((float)bearingDegrees);
   }
-  
+
   static String mapPreviewUrl(LatLng at) {
     String loc = at.toAtlasString();
     return "http://maps.googleapis.com/maps/api/staticmap?center=" + loc
