@@ -47,8 +47,7 @@
 		            android:layout_height="wrap_content"
 		            android:layout_alignParentRight="true"
 		            android:layout_centerVertical="true"
-		            android:layout_marginRight="8dp"
-		            android:src="@drawable/star_empty" />
+		            android:layout_marginRight="8dp"/>
 		    </RelativeLayout>
 		
 		    <LinearLayout
@@ -97,7 +96,8 @@
 		        <LinearLayout
 		            android:id="@+id/details_gallery_linear"
 		            android:layout_width="wrap_content"
-		            android:layout_height="match_parent" >
+		            android:layout_height="match_parent"
+		            android:orientation="horizontal">
 
 		        </LinearLayout>
 

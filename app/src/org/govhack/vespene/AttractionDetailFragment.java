@@ -1,8 +1,7 @@
 package org.govhack.vespene;
 
-import java.util.List;
-
 import org.govhack.vespene.atlas.Product;
+import org.govhack.vespene.util.Preconditions;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -15,11 +14,9 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.EngineInfo;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,13 +40,19 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class AttractionDetailFragment extends Fragment {
-  
+
   private Product product = null;
   private Typeface tfBold;
   private Typeface tfReg;
   private Typeface tfThin;
-  private TextToSpeech tts;
-    
+
+  private Favourites favourites = null;
+  private TextToSpeech tts = null;
+
+  public void setFavourites(Favourites favourites) {
+    this.favourites = favourites;
+  }
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -57,20 +60,20 @@ public class AttractionDetailFragment extends Fragment {
     tfReg = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Medium.ttf");
     tfThin = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Thin.ttf");
   }
-  
+
   @Override
   public void onPrepareOptionsMenu(Menu menu) {
     menu.findItem(R.id.menu_favourites).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
     menu.findItem(R.id.menu_search).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
   }
-  
+
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, 
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     getActivity().invalidateOptionsMenu();
     return inflater.inflate(R.layout.attraction_detail_layout, container, false);
   }
-  
+
   @Override
   public void onDestroyView() {
     try {
@@ -86,17 +89,18 @@ public class AttractionDetailFragment extends Fragment {
     }
     super.onDestroyView();
   }
-  
+
   @Override
   public void onStart() {
-    super.onStart();  
+    Preconditions.checkState(favourites != null, "Favourites not initialised");
+    super.onStart();
     final LinearLayout detailContainer = (LinearLayout)getV(R.id.detail_container);
     final LinearLayout mapContainer = (LinearLayout)getV(R.id.detail_map_container);
     final Activity activity = getActivity();
     ActionBar actionBar = activity.getActionBar();
     actionBar.setTitle(product.name);
     actionBar.setDisplayHomeAsUpEnabled(true);
-    
+
     getTv(R.id.detail_place_name).setText(product.name);
     getTv(R.id.detail_place_name).setTypeface(tfReg);
 
@@ -123,10 +127,13 @@ public class AttractionDetailFragment extends Fragment {
 
     getTv(R.id.detail_phone_label).setTypeface(tfBold);
     getTv(R.id.detail_email_label).setTypeface(tfBold);
-    
+
     getTv(R.id.detail_place_address).setText(product.address.address);
     getTv(R.id.detail_place_address).setTypeface(tfThin);
-    
+
+    ImageView fav = (ImageView) getV(R.id.detail_place_favourite);
+    favourites.registerFavouriteToggle(fav, product.header);
+
     if (product.phoneNumber != null) {
       getV(R.id.detail_layout_phone).setVisibility(View.VISIBLE);
       TextView tv = getTv(R.id.detail_phone);
@@ -144,7 +151,7 @@ public class AttractionDetailFragment extends Fragment {
     } else {
       getV(R.id.detail_layout_phone).setVisibility(View.GONE);
     }
-    
+
     if (product.emailAddress != null) {
       getV(R.id.detail_layout_email).setVisibility(View.VISIBLE);
       TextView tv = getTv(R.id.detail_email);
@@ -161,7 +168,7 @@ public class AttractionDetailFragment extends Fragment {
     } else {
       getV(R.id.detail_layout_email).setVisibility(View.GONE);
     }
-    
+
     View galleryHolder = getV(R.id.detail_gallery_holder);
     if (product.multimedia.size() > 1) {
       galleryHolder.setVisibility(View.VISIBLE);
@@ -190,7 +197,7 @@ public class AttractionDetailFragment extends Fragment {
     } else {
       galleryHolder.setVisibility(View.GONE);
     }
-    
+
     GoogleMap map = mapFragment().getMap();
     mapFragment().getView().setBackgroundColor(Color.WHITE);
     LatLng ll = product.location.realLatLng();
@@ -211,19 +218,19 @@ public class AttractionDetailFragment extends Fragment {
       }
     });
     detailContainer.setOnClickListener(new OnClickListener() {
-      @Override 
+      @Override
       public void onClick(View v) {
         shrinkMap();
       }
     });
-    
+
     map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
       @Override
       public void onInfoWindowClick(Marker m) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, 
+        Intent intent = new Intent(Intent.ACTION_VIEW,
             Uri.parse("http://maps.google.com/maps?daddr=" + m.getPosition().latitude
                 + "," + m.getPosition().longitude + "&dirflg=w"));
-        intent.setComponent(new ComponentName("com.google.android.apps.maps", 
+        intent.setComponent(new ComponentName("com.google.android.apps.maps",
             "com.google.android.maps.MapsActivity"));
         startActivity(intent);
       }
@@ -233,11 +240,11 @@ public class AttractionDetailFragment extends Fragment {
   private MapFragment mapFragment() {
     return (MapFragment) getFragmentManager().findFragmentById(R.id.detail_map);
   }
-  
+
   private void expandMap() {
     LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
     LinearLayout mapContainer = (LinearLayout)getV(R.id.detail_map_container);
-    LinearLayout.LayoutParams lp = 
+    LinearLayout.LayoutParams lp =
         new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 4);
     mapContainer.setLayoutParams(lp);
     sectionContainer.setWeightSum(6);
@@ -247,7 +254,7 @@ public class AttractionDetailFragment extends Fragment {
   private void shrinkMap() {
     LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
     LinearLayout mapContainer = (LinearLayout)getV(R.id.detail_map_container);
-    LinearLayout.LayoutParams lp = 
+    LinearLayout.LayoutParams lp =
         new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1);
     mapContainer.setLayoutParams(lp);
     sectionContainer.setWeightSum(3);
@@ -257,19 +264,19 @@ public class AttractionDetailFragment extends Fragment {
   public void setProduct(Product product) {
     this.product = product;
   }
-  
+
   private View getV(int id) {
     return getView().findViewById(id);
   }
-  
+
   private TextView getTv(int id) {
     return (TextView)getV(id);
   }
-  
+
   private Spanned callLink(String number) {
     return Html.fromHtml(String.format("<a href=\"tel:%s\">%s</a>", number, number));
   }
-  
+
   private Spanned emailLink(String addr) {
     return Html.fromHtml(String.format("<a href=\"mailto:%s\">%s</a>", addr, addr));
   }

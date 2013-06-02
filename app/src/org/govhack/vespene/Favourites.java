@@ -14,6 +14,9 @@ import org.json.JSONException;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
 
 public class Favourites {
   public static final String FAV_PREFS = "FavePrefs";
@@ -74,4 +77,21 @@ public class Favourites {
   public Set<ProductHeader> getFavourites() {
     return Collections.unmodifiableSet(favourites);
   }
+
+
+  // View Utils (don't really belong here but whatever hackathon)
+
+  public void registerFavouriteToggle(final ImageView view, final ProductHeader product) {
+    updateFavImage(view, isFave(product));
+    view.setOnClickListener(new OnClickListener() {
+      @Override public void onClick(View v) {
+        updateFavImage(view, toggleFave(product));
+      }
+    });
+  }
+
+  public static void updateFavImage(ImageView view, boolean isFav) {
+    view.setImageResource(isFav ? R.drawable.star_full : R.drawable.star_empty);
+  }
+
 }

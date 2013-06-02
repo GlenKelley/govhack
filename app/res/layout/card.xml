@@ -80,31 +80,31 @@
             android:layout_below="@+id/card_address" >
         </TextView>
                 
-        <FrameLayout
-          android:id="@+id/distance_holder"
-          android:paddingTop="0dp"
-          android:paddingBottom="6dp"
-          android:layout_width="105dp"
-          android:layout_height="wrap_content"
-          android:layout_alignParentRight="true" 
-          android:layout_below="@+id/card_address" >
+        <LinearLayout
+            android:id="@+id/distance_holder"
+            android:layout_width="105dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/card_address"
+            android:orientation="horizontal"
+            android:paddingBottom="6dp"
+            android:paddingTop="0dp" >
+
+            <TextView
+                android:id="@+id/distance_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="120m" />
           
           <ImageView
-            android:id="@+id/compass"
-            android:layout_marginLeft="50dp"
-            android:layout_marginBottom="10dp"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/nav_arrow" />
+              android:id="@+id/compass"
+              android:layout_width="22dp"
+              android:layout_height="22dp"
+              android:layout_marginLeft="4dp"
+              android:scaleType="fitCenter"
+              android:src="@drawable/nav_arrow" />
 
-          <TextView
-            android:id="@+id/distance_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="120m"
-            />
-
-        </FrameLayout>
+        </LinearLayout>
         
         <FrameLayout
           android:paddingLeft="15dp"
