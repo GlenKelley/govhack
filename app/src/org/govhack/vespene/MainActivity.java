@@ -22,6 +22,7 @@ import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.hardware.GeomagneticField;
 import android.location.Address;
@@ -43,7 +44,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnInitListener {
 
-  public static final String WARM_WELCOME_PREFS = "";
+  public static final String WARM_WELCOME_PREFS = "WarmWelcomePrefs";
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
 
@@ -102,7 +103,16 @@ public class MainActivity extends Activity implements OnInitListener {
     });
 
     
-    showWarmWelcome();
+    SharedPreferences settings = this.getSharedPreferences(WARM_WELCOME_PREFS, Context.MODE_PRIVATE);
+    boolean shownWelcome = settings.getBoolean("shownWelcome", false);
+    
+    if (!shownWelcome) {
+      showWarmWelcome();
+      
+      SharedPreferences.Editor prefEditor = settings.edit();
+      prefEditor.putBoolean("shownWelcome", true);
+      prefEditor.commit();
+    }
 //    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
 //    mp.identify(Installation.id(this));
 //    if (Installation.wasNewInstallation()) {
