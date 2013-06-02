@@ -8,8 +8,8 @@
     <ImageView
         android:id="@+id/splash_image"
         android:layout_width="fill_parent"
-        android:layout_height="150dp"
-        android:src="@drawable/warm_welcome_splash" />
+        android:layout_height="160dp"
+        android:src="@drawable/opera_house2" />
     
     <TextView
         android:id="@+id/warm_text1"
