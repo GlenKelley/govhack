@@ -74,14 +74,18 @@ public class MainActivity extends Activity implements OnInitListener {
   }
 
   @Override
+  public void onInit(int i) {    
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.i(TAG, "onCreate");
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
     getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-    getActionBar().setTitle(getApplicationName(getApplication()) + ": Near Me");
-
+    setMainTitle();
+    
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
     getActionBar().setHomeButtonEnabled(true);
@@ -91,6 +95,7 @@ public class MainActivity extends Activity implements OnInitListener {
       public void onBackStackChanged() {
         if (isRootFragment(fragmentManager)) {
           getActionBar().setDisplayHomeAsUpEnabled(false);
+          setMainTitle();
         }
       }
     });
@@ -295,9 +300,10 @@ public class MainActivity extends Activity implements OnInitListener {
     return true;
   }
 
-  @Override
-  public void onInit(int status) {
+  private void setMainTitle() {
+    getActionBar().setTitle(getApplicationName(getApplication()) + ": Near Me");
   }
+
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
