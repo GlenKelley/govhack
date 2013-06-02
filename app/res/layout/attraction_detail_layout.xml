@@ -107,16 +107,25 @@
 		        android:id="@+id/detail_description"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_margin="8dp"
+		        android:layout_marginLeft="8dp"
 		        android:layout_marginRight="8dp"
 		        android:text="With 270 wines and close to 100 cheeses, GPO Wine and Cheese Room presents a sophisticated European-style space, perfect for decadent appraisals. A large painting depicts a woman who oversees each scrumptious proceeding as sounds of content murmur from diners&apos; cheese-filled mouths."
 		        android:textColor="@android:color/secondary_text_light" />
+
+		    <TextView
+		        android:id="@+id/detail_speak"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginLeft="8dp"
+		        android:text="Long press to speak"
+		        android:textColor="@android:color/secondary_text_light"
+		        android:textSize="11sp" />
 		
 		    <LinearLayout
 		        android:id="@+id/detail_layout_phone"
 		        android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
-		        android:layout_marginTop="0dp" >
+		        android:layout_marginTop="6dp" >
 		
 		        <TextView
 		            android:id="@+id/detail_phone_label"

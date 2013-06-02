@@ -1,5 +1,7 @@
 package org.govhack.vespene;
 
+import java.util.List;
+
 import org.govhack.vespene.atlas.Product;
 
 import android.app.ActionBar;
@@ -12,13 +14,18 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.EngineInfo;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
@@ -41,6 +48,7 @@ public class AttractionDetailFragment extends Fragment {
   private Typeface tfBold;
   private Typeface tfReg;
   private Typeface tfThin;
+  private TextToSpeech tts;
     
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +80,10 @@ public class AttractionDetailFragment extends Fragment {
       transaction.commit();
     } catch (RuntimeException e) {
     }
+    if (tts != null) {
+      tts.stop();
+      tts.shutdown();
+    }
     super.onDestroyView();
   }
   
@@ -95,6 +107,19 @@ public class AttractionDetailFragment extends Fragment {
 
     getTv(R.id.detail_description).setText(product.description);
     getTv(R.id.detail_description).setTypeface(tfThin);
+    getTv(R.id.detail_description).setOnLongClickListener(new OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        tts = new TextToSpeech(activity, new OnInitListener() {
+          @Override
+          public void onInit(int status) {
+            tts.speak(product.description, TextToSpeech.QUEUE_FLUSH, null);
+          }
+        });
+        return true;
+      }
+    });
+    getTv(R.id.detail_speak).setTypeface(tfThin);
 
     getTv(R.id.detail_phone_label).setTypeface(tfBold);
     getTv(R.id.detail_email_label).setTypeface(tfBold);
