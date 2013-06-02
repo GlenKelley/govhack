@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.govhack.vespene.atlas.Atlas;
 import org.govhack.vespene.atlas.LatLng;
+import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.atlas.Search;
 import org.govhack.vespene.util.AsyncUrlFetcher;
+import org.govhack.vespene.util.Preconditions;
 import org.joda.time.DateMidnight;
 import org.joda.time.Days;
 import org.json.JSONException;
@@ -18,6 +20,7 @@ import android.app.FragmentManager;
 import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.GeomagneticField;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -28,12 +31,12 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 
-import com.google.android.gms.location.LocationListener;
-
-public class MainActivity extends Activity implements OnInitListener, LocationListener {
+public class MainActivity extends Activity implements OnInitListener {
 
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
@@ -51,10 +54,14 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
   private LocationTracker locationTracker = null;
   private Favourites favourites = new Favourites(this);
 
+  private CardPagerAdapter cardAdapter = null;
+
   private ImageFetcher images;
 
   private boolean locationOverride = false;
-  private LatLng myLastlatLng = null;
+  private LatLng lastAnchorLocation = null;
+  private Location myLastLocation = null;
+  private LatLng myLastLatLng = null;
 
   public static int dayCount() {
     DateMidnight today = new DateMidnight();
@@ -124,7 +131,7 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
   @Override
   protected void onStart() {
     favourites.load();
-    CardPagerAdapter cardAdapter = new CardPagerAdapter(this, favourites, images);
+    cardAdapter = new CardPagerAdapter(this, favourites, images);
     getCardsFragment().setAdapter(cardAdapter);
 
     //  maybe just make this a method that binds them together instead of a ctor...
@@ -139,12 +146,46 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
 //	tts.setLanguage(Locale.US);
   }
 
-  @Override
-  public void onLocationChanged(Location location) {
-	 myLastlatLng = new LatLng(location.getLatitude(), location.getLongitude());
-	 if (!locationOverride) {
-		 products.doSearch(new Search(myLastlatLng));
+  public void onBearingChanged(float bearing) {
+	 if (getCardsFragment() != null && myLastLocation != null) {
+		 ViewGroup group = getCardsFragment().root;
+
+		 GeomagneticField geoField = new GeomagneticField(
+	        Double.valueOf(myLastLocation.getLatitude()).floatValue(),
+	        Double.valueOf(myLastLocation.getLongitude()).floatValue(),
+	        Double.valueOf(myLastLocation.getAltitude()).floatValue(),
+	        System.currentTimeMillis()
+	      );
+
+		 List<Product> productList = products.getList();
+		 Preconditions.checkState(cardAdapter != null, "card adapter is null on location changed");
+		 Log.w("glen", "bearing" + bearing);
+		 for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
+			 View cardView = group.getChildAt(i);
+			 Product product = productList.get(i);
+			 if (product.location != null && myLastLatLng != null) {
+				 double bearingDegrees = myLastLatLng.bearingToDeg(product.location) - bearing - geoField.getDeclination();
+//				 Log.w("glen", "" + i + ":\t" + bearingDegrees);
+				 double distanceMs = myLastLatLng.distanceTo(product.location);
+				 cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
+			 }
+		 }
 	 }
+  }
+
+  public void onLocationChanged(Location location, float bearing) {
+	 myLastLocation = location;
+	 myLastLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+	 if (!locationOverride) {
+		 LatLng latLng = new LatLng(myLastLocation.getLatitude(), myLastLocation.getLongitude());
+		 if (lastAnchorLocation == null || latLng.distanceTo(lastAnchorLocation) > 10) {
+			 lastAnchorLocation = myLastLatLng;
+			 Log.w("glen", "do search");
+			 products.doSearch(new Search(latLng));
+		 }
+	 }
+	 onBearingChanged(bearing);
   }
 
   @Override
@@ -221,8 +262,8 @@ public class MainActivity extends Activity implements OnInitListener, LocationLi
           locationOverride = false;
           actionBar.setDisplayHomeAsUpEnabled(false);
           actionBar.setTitle("Oz Explore - Near me");
-          if (myLastlatLng != null) {
-            products.doSearch(new Search(myLastlatLng));
+          if (myLastLatLng != null) {
+            products.doSearch(new Search(myLastLatLng));
           }
         } else {
           getFragmentManager().popBackStack();
