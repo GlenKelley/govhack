@@ -107,7 +107,7 @@ public class CardPagerAdapter extends BaseAdapter {
 
     FrameLayout thumbnailHolder = (FrameLayout) cardView.findViewById(R.id.thumbnail_holder);
     ImageView thumbnail = new ImageView(activity);
-    clearImage(thumbnail); // clear to prevent old junk from appearing
+//    clearImage(thumbnail); // clear to prevent old junk from appearing
     if (product.imageUrl != null) {
       images.fetchImage(product.imageUrl, new ImageUpdater(thumbnail));
     }
@@ -115,7 +115,7 @@ public class CardPagerAdapter extends BaseAdapter {
     thumbnailHolder.addView(thumbnail);
 
     ImageView map = (ImageView) cardView.findViewById(R.id.map_preview);
-    clearImage(map);
+//    clearImage(map);
     images.fetchImage(mapPreviewUrl(product.location), new ImageUpdater(map));
 
     TextView addressText = (TextView) cardView.findViewById(R.id.card_address);
