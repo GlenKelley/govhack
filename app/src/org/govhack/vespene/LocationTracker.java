@@ -65,8 +65,8 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
         SensorManager.SENSOR_DELAY_NORMAL);
 
 		request = LocationRequest.create();
-	    request.setInterval(100);
-	    request.setFastestInterval(100);
+	    request.setInterval(10000);
+	    request.setFastestInterval(10000);
 //	    request.setSmallestDisplacement(50); //50 meters
 
 		this.locationListener = locationListener;
@@ -108,7 +108,7 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		long now = System.currentTimeMillis();
-		if (now > lastSent + 600) {
+		if (now > lastSent + 10000) {
 			if (SensorManager.getRotationMatrix(R, I, acc, mag)) {
 				SensorManager.getOrientation(R, orientation);
 				bearing = (float)((orientation[0] / Math.PI + 1) * 180);
