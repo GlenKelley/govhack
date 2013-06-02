@@ -75,7 +75,7 @@
 		            android:layout_gravity="top"
 		            android:layout_marginLeft="8dp"
 		            android:text="1.2km"
-		            android:textColor="@android:color/secondary_text_dark"
+		            android:textColor="@android:color/primary_text_light"
 		            android:textSize="14dp" />
 		
 		        <ImageView

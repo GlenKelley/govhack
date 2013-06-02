@@ -98,10 +98,10 @@ public class CardPagerAdapter extends BaseAdapter {
     });
 
     final ImageView fav = (ImageView) cardView.findViewById(R.id.favourite_image2);
-    updateFavImage(fav, favourites.isFave(product.id));
+    updateFavImage(fav, favourites.isFave(product.header));
     fav.setOnClickListener(new OnClickListener() {
       @Override public void onClick(View v) {
-        updateFavImage(fav, favourites.toggleFave(product.id));
+        updateFavImage(fav, favourites.toggleFave(product.header));
       }
     });
 

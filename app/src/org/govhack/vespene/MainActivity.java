@@ -16,15 +16,16 @@ import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.AbstractCursor;
-import android.database.Cursor;
+import android.graphics.Typeface;
+import android.hardware.GeomagneticField;
 import android.location.Address;
 import android.location.Geocoder;
-import android.hardware.GeomagneticField;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -34,17 +35,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CursorAdapter;
-import android.widget.SearchView;
-import android.widget.SimpleCursorAdapter;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.SearchView;
+import android.widget.TextView;
 
-import com.google.android.gms.location.LocationListener;
+public class MainActivity extends Activity implements OnInitListener {
 
-public class MainActivity extends Activity implements OnInitListener {  
-	
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
 
@@ -59,12 +57,12 @@ public class MainActivity extends Activity implements OnInitListener {
   private ProductList products = new ProductList(atlas);
   private TextToSpeech tts = null;
   private LocationTracker locationTracker = null;
-  private Favourites favourites = new Favourites();
+  private Favourites favourites = new Favourites(this);
 
   private CardPagerAdapter cardAdapter = null;
-  
+
   private ImageFetcher images;
-  
+
   private boolean locationOverride = false;
   private LatLng lastAnchorLocation = null;
   private Location myLastLocation = null;
@@ -82,6 +80,7 @@ public class MainActivity extends Activity implements OnInitListener {
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
     getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+    getActionBar().setTitle(getApplicationName(getApplication()) + ": Near Me");
 
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -90,12 +89,13 @@ public class MainActivity extends Activity implements OnInitListener {
     fragmentManager.addOnBackStackChangedListener(new OnBackStackChangedListener() {
       @Override
       public void onBackStackChanged() {
-        if (fragmentManager.getBackStackEntryCount() < 1) {
+        if (isRootFragment(fragmentManager)) {
           getActionBar().setDisplayHomeAsUpEnabled(false);
         }
       }
     });
 
+    showWarmWelcome();
 //    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
 //    mp.identify(Installation.id(this));
 //    if (Installation.wasNewInstallation()) {
@@ -106,7 +106,46 @@ public class MainActivity extends Activity implements OnInitListener {
 //    tts = new TextToSpeech(this, this);
   }
 
-@Override
+  private void showWarmWelcome() {
+	  View view = getLayoutInflater().inflate(R.layout.warm_welcome, null);
+	  if (view == null) {
+		  return;
+	  }
+
+	  ImageView splashImage = (ImageView) view.findViewById(R.id.splash_image);
+	  splashImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+	  Typeface tfReg = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Regular.ttf");
+	  Typeface tfThin = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
+
+	  TextView topText = (TextView) view.findViewById(R.id.warm_text1);
+	  topText.setTypeface(tfThin);
+	  topText.setTextSize(12.0f);
+	  topText.setText(
+	      "Oz Explore helps you uncover the hidden gems of Australia. " +
+        "As you explore on foot, bicycle or by car, information about the " +
+	      "attractions near you will rise to the top.");
+
+	  TextView bottomText = (TextView) view.findViewById(R.id.warm_text2);
+	  bottomText.setTypeface(tfReg);
+	  bottomText.setTextSize(14.0f);
+	  bottomText.setText(
+        "- Tap a card to see more information.\n\n" +
+	      "- Search for attractions near other locations.\n");
+
+	  new AlertDialog.Builder(this)
+	    .setTitle("Welcome to Oz Explore")
+	    .setView(view)
+	    .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+	        @Override
+          public void onClick(DialogInterface dialog, int which) {
+	            // continue with delete
+	        }
+	     })
+	     .show();
+  }
+
+  @Override
   protected void onNewIntent(Intent i) {
     Log.i(TAG, "New intent: " + i.getAction());
     if (ACTION_LATEST.equals(i.getAction())) {
@@ -122,11 +161,7 @@ public class MainActivity extends Activity implements OnInitListener {
 
   CardsFragment getCardsFragment() {
     FragmentManager fm = getFragmentManager();
-//    while (fm.getBackStackEntryCount() > 0) {
-//      fm.popBackStackImmediate();
-//    }
     return (CardsFragment) fm.findFragmentById(R.id.fragment_gallery);
-    //gallery.showLast();
   }
 
   @Override
@@ -137,6 +172,7 @@ public class MainActivity extends Activity implements OnInitListener {
 
   @Override
   protected void onStart() {
+    favourites.load();
     cardAdapter = new CardPagerAdapter(this, favourites, images);
     getCardsFragment().setAdapter(cardAdapter);
 
@@ -153,42 +189,45 @@ public class MainActivity extends Activity implements OnInitListener {
   }
 
   public void onBearingChanged(float bearing) {
-	 if (getCardsFragment() != null && myLastLocation != null) {
-		 ViewGroup group = (ViewGroup) getCardsFragment().root;
+    if (getCardsFragment() != null && myLastLocation != null) {
+      ViewGroup group = getCardsFragment().root;
 
-		 GeomagneticField geoField = new GeomagneticField(
-	        Double.valueOf(myLastLocation.getLatitude()).floatValue(),
-	        Double.valueOf(myLastLocation.getLongitude()).floatValue(),
-	        Double.valueOf(myLastLocation.getAltitude()).floatValue(),
-	        System.currentTimeMillis()
-	      );
-		 
-		 List<Product> productList = products.getList();
-		 Preconditions.checkState(cardAdapter != null, "card adapter is null on location changed");
-		 for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
-			 View cardView = group.getChildAt(i);
-			 Product product = productList.get(i);
-			 if (product.location != null && myLastLatLng != null) {
-				 double bearingDegrees = myLastLatLng.bearingToDeg(product.location) - bearing + geoField.getDeclination();
-				 double distanceMs = myLastLatLng.distanceTo(product.location);
-				 cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
-			 }
-		 }
-	 }
+      GeomagneticField geoField = new GeomagneticField(Double.valueOf(
+          myLastLocation.getLatitude()).floatValue(), Double.valueOf(
+          myLastLocation.getLongitude()).floatValue(), Double.valueOf(
+          myLastLocation.getAltitude()).floatValue(),
+          System.currentTimeMillis());
+
+      List<Product> productList = products.getList();
+      Preconditions.checkState(cardAdapter != null,
+          "card adapter is null on location changed");
+      for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
+        View cardView = group.getChildAt(i);
+        Product product = productList.get(i);
+        if (product.location != null && myLastLatLng != null) {
+          double bearingDegrees = myLastLatLng.bearingToDeg(product.location)
+              - bearing + geoField.getDeclination();
+          double distanceMs = myLastLatLng.distanceTo(product.location);
+          cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
+        }
+      }
+    }
   }
-  
+
   public void onLocationChanged(Location location, float bearing) {
-	 myLastLocation = location;
-	 myLastLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-	 
-	 if (!locationOverride) {
-		 LatLng latLng = new LatLng(myLastLocation.getLatitude(), myLastLocation.getLongitude());
-		 if (lastAnchorLocation == null || latLng.distanceTo(lastAnchorLocation) > 10) {
-			 lastAnchorLocation = myLastLatLng;
-			 products.doSearch(new Search(latLng));
-		 }
-	 }
-	 onBearingChanged(bearing);
+    myLastLocation = location;
+    myLastLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+    if (!locationOverride) {
+      LatLng latLng = new LatLng(myLastLocation.getLatitude(),
+          myLastLocation.getLongitude());
+      if (lastAnchorLocation == null
+          || latLng.distanceTo(lastAnchorLocation) > 10) {
+        lastAnchorLocation = myLastLatLng;
+        products.doSearch(new Search(latLng));
+      }
+    }
+    onBearingChanged(bearing);
   }
 
   @Override
@@ -214,40 +253,44 @@ public class MainActivity extends Activity implements OnInitListener {
     super.onCreateOptionsMenu(menu);
     // Inflate the menu; this adds items to the action bar if it is present.
     Log.d(TAG, "onCreateOptionsMenu");
-    getMenuInflater().inflate(R.menu.main, menu);
-    
-    SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-    searchView.setQueryHint("Search Location");
-    
-    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-		@Override
-		public boolean onQueryTextChange(String newText) {
-			return false;
-		}
 
-		@Override
-		public boolean onQueryTextSubmit(String query) {
-			Geocoder gc = new Geocoder(MainActivity.this);
-			try {
-				List<Address> address = gc.getFromLocationName(query, 1);
-				if (address.size() > 0) {
-					products.doSearch(new Search(new LatLng(address.get(0).getLatitude(), 
-							address.get(0).getLongitude())));
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			InputMethodManager im = (InputMethodManager) MainActivity.this
-		            .getSystemService(Context.INPUT_METHOD_SERVICE);
-		    im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
-		            .getWindowToken(), 0);
-		    locationOverride = true;
-		    MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(true);
-			return true;
-		}
-    });
-    
+    if (isRootFragment(getFragmentManager())) {
+      getMenuInflater().inflate(R.menu.main, menu);
+      SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+      searchView.setQueryHint("Search Location");
+
+      searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+          @Override
+          public boolean onQueryTextChange(String newText) {
+              return false;
+          }
+
+          @Override
+          public boolean onQueryTextSubmit(String query) {
+              Geocoder gc = new Geocoder(MainActivity.this);
+              try {
+                  List<Address> address = gc.getFromLocationName(query, 1);
+                  if (address.size() > 0) {
+                      products.doSearch(new Search(new LatLng(address.get(0).getLatitude(),
+                              address.get(0).getLongitude())));
+                  }
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+
+              InputMethodManager im = (InputMethodManager) MainActivity.this
+                      .getSystemService(Context.INPUT_METHOD_SERVICE);
+              im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
+                      .getWindowToken(), 0);
+              locationOverride = true;
+              MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(true);
+              return true;
+          }
+      });
+    } else {
+      // No menu in non-root view
+    }
+
     track("options-menu-shown");
     return true;
   }
@@ -258,18 +301,24 @@ public class MainActivity extends Activity implements OnInitListener {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+    ActionBar actionBar = MainActivity.this.getActionBar();
     switch (item.getItemId()) {
       case android.R.id.home:
-    	if (getFragmentManager().getBackStackEntryCount() < 1) {
-    		locationOverride = false;
-    		MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(false);
-    		MainActivity.this.getActionBar().setTitle("Oz Explore");
-    		if (myLastLatLng != null) {
-    			products.doSearch(new Search(myLastLatLng));
-    		}
-    	} else {
-    		getFragmentManager().popBackStack();
-    	}
+        if (getFragmentManager().getBackStackEntryCount() < 1) {
+          locationOverride = false;
+          actionBar.setDisplayHomeAsUpEnabled(false);
+          actionBar.setTitle("Oz Explore: Near Me");
+          if (myLastLatLng != null) {
+            products.doSearch(new Search(myLastLatLng));
+          }
+        } else {
+          getFragmentManager().popBackStack();
+        }
+        return true;
+      case R.id.menu_favourites:
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Favourites");
+        products.setListFromHeaders(favourites.getFavourites());
         return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -290,5 +339,14 @@ public class MainActivity extends Activity implements OnInitListener {
     } else {
 //      mp.track(event, j);
     }
+  }
+
+  private boolean isRootFragment(final FragmentManager fragmentManager) {
+    return fragmentManager.getBackStackEntryCount() < 1;
+  }
+
+  public static String getApplicationName(Context context) {
+    int stringId = context.getApplicationInfo().labelRes;
+    return context.getString(stringId);
   }
 }

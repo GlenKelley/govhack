@@ -12,15 +12,11 @@ import org.govhack.vespene.util.Callback;
 import org.govhack.vespene.util.Lists;
 import org.govhack.vespene.util.Preconditions;
 
+import android.util.Log;
+
 public class ProductList {
   public interface Listener {
-    /**
-     * May be called multiple times in a row before onUpdate
-     */
     void onSearching();
-    /**
-     * Will not be called twice in a row, will always be preceded by onSearching
-     */
     void onUpdate();
 
     void onError(Exception e);
@@ -55,35 +51,8 @@ public class ProductList {
         if (searchId != currentSearchId) {
           return;
         }
-        products.clear();
-        listener.onUpdate();
 
-        for (final ProductHeader header : result) {
-          if (header.imageUrl == null) {
-            continue;
-          }
-          atlas.lookupProduct(header.id, new Callback<ProductDetail>() {
-            @Override
-            public void success(ProductDetail detail) {
-              if (searchId != currentSearchId) {
-                return;
-              }
-              Product product = new Product(header, detail);
-              products.add(product);
-              listener.onUpdate();
-            }
-
-            @Override
-            public void error(Exception e) {
-              if (searchId != currentSearchId) {
-                return;
-              }
-              // suppress errors because ATLAS does not contain detailed info
-              // for all products
-              System.err.println(e);
-            }
-          });
-        }
+        setProducts(searchId, result);
       }
       @Override public void error(Exception e) {
         if (searchId != currentSearchId) {
@@ -93,5 +62,48 @@ public class ProductList {
         listener.onError(e);
       }
     });
+  }
+
+  public void setListFromHeaders(Iterable<ProductHeader> headers) {
+    setProducts(++currentSearchId, headers);
+  }
+
+  private void setProducts(final int searchId, Iterable<ProductHeader> headers) {
+    clear();
+    for (final ProductHeader header : headers) {
+      if (header.imageUrl == null) {
+        continue;
+      }
+      atlas.lookupProduct(header.id, new Callback<ProductDetail>() {
+        @Override
+        public void success(ProductDetail detail) {
+          if (searchId != currentSearchId) {
+            return;
+          }
+          Product product = new Product(header, detail);
+          addProduct(product);
+        }
+
+        @Override
+        public void error(Exception e) {
+          if (searchId != currentSearchId) {
+            return;
+          }
+          // suppress errors because ATLAS does not contain detailed info
+          // for all products
+          Log.w("ProductList", e);
+        }
+      });
+    }
+  }
+
+  private void clear() {
+    products.clear();
+    listener.onUpdate();
+  }
+
+  private void addProduct(Product product) {
+    products.add(product);
+    listener.onUpdate();
   }
 }

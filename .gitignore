@@ -1,4 +1,4 @@
-
+*.apk
 #MacOS finder thumbnail cache
 .DS_Store
 
