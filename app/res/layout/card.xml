@@ -73,6 +73,7 @@
         
         <TextView
             android:id="@+id/card_address"
+            android:ellipsize="end"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="15dp"
@@ -102,6 +103,13 @@
           android:layout_alignParentRight="true" 
           android:layout_below="@+id/card_address" >
           
+          <ImageView
+            android:id="@+id/compass"
+            android:layout_marginLeft="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/compass" />
+
           <TextView
             android:id="@+id/distance_text"
             android:layout_width="wrap_content"

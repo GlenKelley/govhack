@@ -7,7 +7,7 @@ import java.util.EnumSet;
 public class Search {
   public final LatLng location;
   
-  public int distancekms = 1;
+  public int distancekms = 50;
   
   /**
    * if empty, then all categories (default)
