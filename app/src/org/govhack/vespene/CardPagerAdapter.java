@@ -95,7 +95,7 @@ public class CardPagerAdapter extends BaseAdapter {
       }
     });
 
-    final ImageView fav = (ImageView) cardView.findViewById(R.id.favourite_image2);
+    final ImageView fav = (ImageView) cardView.findViewById(R.id.favourite_image);
     favourites.registerFavouriteToggle(fav, product.header);
 
     TextView titleText = (TextView) cardView.findViewById(R.id.card_title);

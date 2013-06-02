@@ -10,42 +10,28 @@
         android:layout_width="fill_parent"
         android:layout_height="47dp" >
         
-        <FrameLayout
-            android:paddingLeft="10dp"
-            android:paddingTop="8dp"
-            android:paddingRight="10dp"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:layout_alignParentLeft="true" >
-        	
-          <ImageView
-            android:id="@+id/favourite_image2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"/>
-        </FrameLayout>
-        
         <TextView
             android:id="@+id/card_title"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
+            android:layout_marginRight="60dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:paddingLeft="5dp"
+            android:paddingLeft="15dp"
             android:paddingTop="11dp" >
         </TextView>
         
         <FrameLayout
-            android:paddingTop="15dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="8dp"
             android:paddingRight="10dp"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:layout_alignParentRight="true" >
-        	
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true" >
+          
           <ImageView
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:layout_width="20dp"
-            android:layout_height="20dp"/>
+            android:id="@+id/favourite_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
         </FrameLayout>
         
     </RelativeLayout>
@@ -106,9 +92,10 @@
           <ImageView
             android:id="@+id/compass"
             android:layout_marginLeft="50dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/compass" />
+            android:src="@drawable/nav_arrow" />
 
           <TextView
             android:id="@+id/distance_text"

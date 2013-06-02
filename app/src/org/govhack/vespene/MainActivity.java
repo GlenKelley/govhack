@@ -22,6 +22,7 @@ import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.hardware.GeomagneticField;
 import android.location.Address;
@@ -43,6 +44,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnInitListener {
 
+  public static final String WARM_WELCOME_PREFS = "WarmWelcomePrefs";
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
 
@@ -74,14 +76,18 @@ public class MainActivity extends Activity implements OnInitListener {
   }
 
   @Override
+  public void onInit(int i) {    
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.i(TAG, "onCreate");
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
     getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-    getActionBar().setTitle(getApplicationName(getApplication()) + ": Near Me");
-
+    setMainTitle();
+    
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
     getActionBar().setHomeButtonEnabled(true);
@@ -91,11 +97,22 @@ public class MainActivity extends Activity implements OnInitListener {
       public void onBackStackChanged() {
         if (isRootFragment(fragmentManager)) {
           getActionBar().setDisplayHomeAsUpEnabled(false);
+          setMainTitle();
         }
       }
     });
 
-    showWarmWelcome();
+    
+    SharedPreferences settings = this.getSharedPreferences(WARM_WELCOME_PREFS, Context.MODE_PRIVATE);
+    boolean shownWelcome = settings.getBoolean("shownWelcome", false);
+    
+    if (!shownWelcome) {
+      showWarmWelcome();
+      
+      SharedPreferences.Editor prefEditor = settings.edit();
+      prefEditor.putBoolean("shownWelcome", true);
+      prefEditor.commit();
+    }
 //    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
 //    mp.identify(Installation.id(this));
 //    if (Installation.wasNewInstallation()) {
@@ -115,20 +132,19 @@ public class MainActivity extends Activity implements OnInitListener {
 	  ImageView splashImage = (ImageView) view.findViewById(R.id.splash_image);
 	  splashImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-	  Typeface tfReg = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Regular.ttf");
 	  Typeface tfThin = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
 
 	  TextView topText = (TextView) view.findViewById(R.id.warm_text1);
 	  topText.setTypeface(tfThin);
-	  topText.setTextSize(12.0f);
+	  topText.setTextSize(13.0f);
 	  topText.setText(
 	      "Oz Explore helps you uncover the hidden gems of Australia. " +
         "As you explore on foot, bicycle or by car, information about the " +
 	      "attractions near you will rise to the top.");
 
 	  TextView bottomText = (TextView) view.findViewById(R.id.warm_text2);
-	  bottomText.setTypeface(tfReg);
-	  bottomText.setTextSize(14.0f);
+	  bottomText.setTypeface(tfThin);
+	  bottomText.setTextSize(15.0f);
 	  bottomText.setText(
         "- Tap a card to see more information.\n\n" +
 	      "- Search for attractions near other locations.\n");
@@ -201,14 +217,12 @@ public class MainActivity extends Activity implements OnInitListener {
       List<Product> productList = products.getList();
       Preconditions.checkState(cardAdapter != null,
           "card adapter is null on location changed");
-      Log.w("glen", "bearing" + bearing);
       for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
         View cardView = group.getChildAt(i);
         Product product = productList.get(i);
         if (product.location != null && myLastLatLng != null) {
           double bearingDegrees = myLastLatLng.bearingToDeg(product.location)
-              - bearing - geoField.getDeclination();
-          // Log.w("glen", "" + i + ":\t" + bearingDegrees);
+              - bearing + geoField.getDeclination();
           double distanceMs = myLastLatLng.distanceTo(product.location);
           cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
         }
@@ -226,7 +240,6 @@ public class MainActivity extends Activity implements OnInitListener {
       if (lastAnchorLocation == null
           || latLng.distanceTo(lastAnchorLocation) > 10) {
         lastAnchorLocation = myLastLatLng;
-        Log.w("glen", "do search");
         products.doSearch(new Search(latLng));
       }
     }
@@ -298,9 +311,10 @@ public class MainActivity extends Activity implements OnInitListener {
     return true;
   }
 
-  @Override
-  public void onInit(int status) {
+  private void setMainTitle() {
+    getActionBar().setTitle(getApplicationName(getApplication()) + ": Near Me");
   }
+
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
