@@ -7,6 +7,7 @@ import org.govhack.vespene.atlas.LatLng;
 import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.util.Lists;
 import org.govhack.vespene.util.Preconditions;
+import org.govhack.vespene.util.Util;
 
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -146,7 +147,7 @@ public class CardPagerAdapter extends BaseAdapter {
   public void updateLocation(double bearingDegrees, double distanceMs, View cardView) {
 	    TextView distanceText = (TextView) cardView.findViewById(R.id.distance_text);
 	    distanceText.setTypeface(tfThin);
-	    distanceText.setText( (int)distanceMs + "m");
+	    distanceText.setText(Util.formatDistance(distanceMs));
 
 	    ImageView compass = (ImageView) cardView.findViewById(R.id.compass);
 	    compass.setRotation((float)bearingDegrees);

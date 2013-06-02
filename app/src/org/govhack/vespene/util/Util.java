@@ -29,7 +29,7 @@ public class Util {
     }
     return out.toString();
   }
-  
+
   public static String join(String sep, Iterable<?> objects) {
     StringBuilder b = new StringBuilder();
     boolean first = true;
@@ -38,12 +38,12 @@ public class Util {
         b.append(sep);
       }
       first = false;
-      
+
       b.append(o);
     }
     return b.toString();
   }
-  
+
   // copied from stack overflow
   private static String convertToHex(byte[] data) {
     StringBuilder buf = new StringBuilder();
@@ -57,7 +57,7 @@ public class Util {
     }
     return buf.toString();
   }
-  
+
   // copied from stack overflow
   public static String sha1(String text) {
     try {
@@ -69,6 +69,14 @@ public class Util {
       throw new RuntimeException(e);
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  public static String formatDistance(double metres) {
+    if (metres >= 1000) {
+      return String.format("%.1f", metres / 1000) + "km";
+    } else {
+      return ((int) metres) + "m";
     }
   }
 }
