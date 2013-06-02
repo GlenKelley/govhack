@@ -147,45 +147,48 @@ public class MainActivity extends Activity implements OnInitListener {
   }
 
   public void onBearingChanged(float bearing) {
-	 if (getCardsFragment() != null && myLastLocation != null) {
-		 ViewGroup group = getCardsFragment().root;
+    if (getCardsFragment() != null && myLastLocation != null) {
+      ViewGroup group = getCardsFragment().root;
 
-		 GeomagneticField geoField = new GeomagneticField(
-	        Double.valueOf(myLastLocation.getLatitude()).floatValue(),
-	        Double.valueOf(myLastLocation.getLongitude()).floatValue(),
-	        Double.valueOf(myLastLocation.getAltitude()).floatValue(),
-	        System.currentTimeMillis()
-	      );
+      GeomagneticField geoField = new GeomagneticField(Double.valueOf(
+          myLastLocation.getLatitude()).floatValue(), Double.valueOf(
+          myLastLocation.getLongitude()).floatValue(), Double.valueOf(
+          myLastLocation.getAltitude()).floatValue(),
+          System.currentTimeMillis());
 
-		 List<Product> productList = products.getList();
-		 Preconditions.checkState(cardAdapter != null, "card adapter is null on location changed");
-		 Log.w("glen", "bearing" + bearing);
-		 for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
-			 View cardView = group.getChildAt(i);
-			 Product product = productList.get(i);
-			 if (product.location != null && myLastLatLng != null) {
-				 double bearingDegrees = myLastLatLng.bearingToDeg(product.location) - bearing - geoField.getDeclination();
-//				 Log.w("glen", "" + i + ":\t" + bearingDegrees);
-				 double distanceMs = myLastLatLng.distanceTo(product.location);
-				 cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
-			 }
-		 }
-	 }
+      List<Product> productList = products.getList();
+      Preconditions.checkState(cardAdapter != null,
+          "card adapter is null on location changed");
+      Log.w("glen", "bearing" + bearing);
+      for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
+        View cardView = group.getChildAt(i);
+        Product product = productList.get(i);
+        if (product.location != null && myLastLatLng != null) {
+          double bearingDegrees = myLastLatLng.bearingToDeg(product.location)
+              - bearing - geoField.getDeclination();
+          // Log.w("glen", "" + i + ":\t" + bearingDegrees);
+          double distanceMs = myLastLatLng.distanceTo(product.location);
+          cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
+        }
+      }
+    }
   }
 
   public void onLocationChanged(Location location, float bearing) {
-	 myLastLocation = location;
-	 myLastLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+    myLastLocation = location;
+    myLastLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-	 if (!locationOverride) {
-		 LatLng latLng = new LatLng(myLastLocation.getLatitude(), myLastLocation.getLongitude());
-		 if (lastAnchorLocation == null || latLng.distanceTo(lastAnchorLocation) > 10) {
-			 lastAnchorLocation = myLastLatLng;
-			 Log.w("glen", "do search");
-			 products.doSearch(new Search(latLng));
-		 }
-	 }
-	 onBearingChanged(bearing);
+    if (!locationOverride) {
+      LatLng latLng = new LatLng(myLastLocation.getLatitude(),
+          myLastLocation.getLongitude());
+      if (lastAnchorLocation == null
+          || latLng.distanceTo(lastAnchorLocation) > 10) {
+        lastAnchorLocation = myLastLatLng;
+        Log.w("glen", "do search");
+        products.doSearch(new Search(latLng));
+      }
+    }
+    onBearingChanged(bearing);
   }
 
   @Override
@@ -217,32 +220,32 @@ public class MainActivity extends Activity implements OnInitListener {
     searchView.setQueryHint("Search Location");
 
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-		@Override
-		public boolean onQueryTextChange(String newText) {
-			return false;
-		}
+      @Override
+      public boolean onQueryTextChange(String newText) {
+        return false;
+      }
 
-		@Override
-		public boolean onQueryTextSubmit(String query) {
-			Geocoder gc = new Geocoder(MainActivity.this);
-			try {
-				List<Address> address = gc.getFromLocationName(query, 1);
-				if (address.size() > 0) {
-					products.doSearch(new Search(new LatLng(address.get(0).getLatitude(),
-							address.get(0).getLongitude())));
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+      @Override
+      public boolean onQueryTextSubmit(String query) {
+        Geocoder gc = new Geocoder(MainActivity.this);
+        try {
+          List<Address> address = gc.getFromLocationName(query, 1);
+          if (address.size() > 0) {
+            products.doSearch(new Search(new LatLng(address.get(0)
+                .getLatitude(), address.get(0).getLongitude())));
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
 
-			InputMethodManager im = (InputMethodManager) MainActivity.this
-		            .getSystemService(Context.INPUT_METHOD_SERVICE);
-		    im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
-		            .getWindowToken(), 0);
-		    locationOverride = true;
-		    MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(true);
-			return true;
-		}
+        InputMethodManager im = (InputMethodManager) MainActivity.this
+            .getSystemService(Context.INPUT_METHOD_SERVICE);
+        im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
+            .getWindowToken(), 0);
+        locationOverride = true;
+        MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(true);
+        return true;
+      }
     });
 
     track("options-menu-shown");
