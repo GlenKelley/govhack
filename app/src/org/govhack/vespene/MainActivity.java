@@ -16,10 +16,13 @@ import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentManager.OnBackStackChangedListener;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.hardware.GeomagneticField;
 import android.location.Address;
 import android.location.Geocoder;
@@ -34,7 +37,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnInitListener {
 
@@ -90,6 +95,7 @@ public class MainActivity extends Activity implements OnInitListener {
       }
     });
 
+    showWarmWelcome();
 //    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
 //    mp.identify(Installation.id(this));
 //    if (Installation.wasNewInstallation()) {
@@ -98,6 +104,45 @@ public class MainActivity extends Activity implements OnInitListener {
 
     track("app-create");
 //    tts = new TextToSpeech(this, this);
+  }
+
+  private void showWarmWelcome() {
+	  View view = getLayoutInflater().inflate(R.layout.warm_welcome, null);
+	  if (view == null) {
+		  return;
+	  }
+
+	  ImageView splashImage = (ImageView) view.findViewById(R.id.splash_image);
+	  splashImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+	  Typeface tfReg = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Regular.ttf");
+	  Typeface tfThin = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
+
+	  TextView topText = (TextView) view.findViewById(R.id.warm_text1);
+	  topText.setTypeface(tfThin);
+	  topText.setTextSize(12.0f);
+	  topText.setText(
+	      "Oz Explore helps you uncover the hidden gems of Australia. " +
+        "As you explore on foot, bicycle or by car, information about the " +
+	      "attractions near you will rise to the top.");
+
+	  TextView bottomText = (TextView) view.findViewById(R.id.warm_text2);
+	  bottomText.setTypeface(tfReg);
+	  bottomText.setTextSize(14.0f);
+	  bottomText.setText(
+        "- Tap a card to see more information.\n\n" +
+	      "- Search for attractions near other locations.\n");
+
+	  new AlertDialog.Builder(this)
+	    .setTitle("Welcome to Oz Explore")
+	    .setView(view)
+	    .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+	        @Override
+          public void onClick(DialogInterface dialog, int which) {
+	            // continue with delete
+	        }
+	     })
+	     .show();
   }
 
   @Override
