@@ -65,8 +65,8 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
         SensorManager.SENSOR_DELAY_NORMAL);
 
 		request = LocationRequest.create();
-	    request.setInterval(100);
-	    request.setFastestInterval(100);
+	    request.setInterval(10000);
+	    request.setFastestInterval(10000);
 //	    request.setSmallestDisplacement(50); //50 meters
 
 		this.locationListener = locationListener;
