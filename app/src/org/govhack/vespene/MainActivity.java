@@ -75,14 +75,18 @@ public class MainActivity extends Activity implements OnInitListener {
   }
 
   @Override
+  public void onInit(int i) {    
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.i(TAG, "onCreate");
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
     getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-    getActionBar().setTitle(getApplicationName(getApplication()) + ": Near Me");
-
+    setMainTitle();
+    
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
     getActionBar().setHomeButtonEnabled(true);
@@ -92,6 +96,7 @@ public class MainActivity extends Activity implements OnInitListener {
       public void onBackStackChanged() {
         if (isRootFragment(fragmentManager)) {
           getActionBar().setDisplayHomeAsUpEnabled(false);
+          setMainTitle();
         }
       }
     });
@@ -117,20 +122,19 @@ public class MainActivity extends Activity implements OnInitListener {
 	  ImageView splashImage = (ImageView) view.findViewById(R.id.splash_image);
 	  splashImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-	  Typeface tfReg = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Regular.ttf");
 	  Typeface tfThin = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
 
 	  TextView topText = (TextView) view.findViewById(R.id.warm_text1);
 	  topText.setTypeface(tfThin);
-	  topText.setTextSize(12.0f);
+	  topText.setTextSize(13.0f);
 	  topText.setText(
 	      "Oz Explore helps you uncover the hidden gems of Australia. " +
         "As you explore on foot, bicycle or by car, information about the " +
 	      "attractions near you will rise to the top.");
 
 	  TextView bottomText = (TextView) view.findViewById(R.id.warm_text2);
-	  bottomText.setTypeface(tfReg);
-	  bottomText.setTextSize(14.0f);
+	  bottomText.setTypeface(tfThin);
+	  bottomText.setTextSize(15.0f);
 	  bottomText.setText(
         "- Tap a card to see more information.\n\n" +
 	      "- Search for attractions near other locations.\n");
@@ -297,9 +301,10 @@ public class MainActivity extends Activity implements OnInitListener {
     return true;
   }
 
-  @Override
-  public void onInit(int status) {
+  private void setMainTitle() {
+    getActionBar().setTitle(getApplicationName(getApplication()) + ": Near Me");
   }
+
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
