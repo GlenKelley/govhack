@@ -120,20 +120,19 @@ public class MainActivity extends Activity implements OnInitListener {
 	  ImageView splashImage = (ImageView) view.findViewById(R.id.splash_image);
 	  splashImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-	  Typeface tfReg = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Regular.ttf");
 	  Typeface tfThin = Typeface.createFromAsset(this.getAssets(), "fonts/Roboto-Light.ttf");
 
 	  TextView topText = (TextView) view.findViewById(R.id.warm_text1);
 	  topText.setTypeface(tfThin);
-	  topText.setTextSize(12.0f);
+	  topText.setTextSize(13.0f);
 	  topText.setText(
 	      "Oz Explore helps you uncover the hidden gems of Australia. " +
         "As you explore on foot, bicycle or by car, information about the " +
 	      "attractions near you will rise to the top.");
 
 	  TextView bottomText = (TextView) view.findViewById(R.id.warm_text2);
-	  bottomText.setTypeface(tfReg);
-	  bottomText.setTextSize(14.0f);
+	  bottomText.setTypeface(tfThin);
+	  bottomText.setTextSize(15.0f);
 	  bottomText.setText(
         "- Tap a card to see more information.\n\n" +
 	      "- Search for attractions near other locations.\n");
