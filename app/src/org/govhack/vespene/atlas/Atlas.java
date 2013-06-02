@@ -42,7 +42,7 @@ public class Atlas {
 
   private static final String URL_PREFIX = "http://govhack.atdw.com.au/productsearchservice.svc/";
   private static final String KEY = "278965474541";
-
+  private static final String LANGUAGE = "ENGLISH"; // "CHINESE-T"
   private final AsyncUrlFetcher urlFetcher;
 
   public Atlas(AsyncUrlFetcher urlFetcher) {
@@ -95,6 +95,6 @@ public class Atlas {
 	  cb.success(product.multimedia);
   }
   static String svcUrl(String service, String args) {
-    return URL_PREFIX + service + "?key=" + KEY + args + "&out=json";
+    return URL_PREFIX + service + "?key=" + KEY + args + "&out=json" + "&mv=" + LANGUAGE;
   }
 }
