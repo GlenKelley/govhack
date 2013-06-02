@@ -165,13 +165,11 @@ public class MainActivity extends Activity implements OnInitListener {
 		 
 		 List<Product> productList = products.getList();
 		 Preconditions.checkState(cardAdapter != null, "card adapter is null on location changed");
-		 Log.w("glen", "bearing" + bearing);
 		 for (int i = 0; i < productList.size() && i < group.getChildCount(); ++i) {
 			 View cardView = group.getChildAt(i);
 			 Product product = productList.get(i);
 			 if (product.location != null && myLastLatLng != null) {
-				 double bearingDegrees = myLastLatLng.bearingToDeg(product.location) - bearing - geoField.getDeclination();
-//				 Log.w("glen", "" + i + ":\t" + bearingDegrees);
+				 double bearingDegrees = myLastLatLng.bearingToDeg(product.location) - bearing + geoField.getDeclination();
 				 double distanceMs = myLastLatLng.distanceTo(product.location);
 				 cardAdapter.updateLocation(bearingDegrees, distanceMs, cardView);
 			 }
@@ -187,7 +185,6 @@ public class MainActivity extends Activity implements OnInitListener {
 		 LatLng latLng = new LatLng(myLastLocation.getLatitude(), myLastLocation.getLongitude());
 		 if (lastAnchorLocation == null || latLng.distanceTo(lastAnchorLocation) > 10) {
 			 lastAnchorLocation = myLastLatLng;
-			 Log.w("glen", "do search");
 			 products.doSearch(new Search(latLng));
 		 }
 	 }

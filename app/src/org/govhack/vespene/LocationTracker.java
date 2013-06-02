@@ -20,7 +20,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedListener, SensorEventListener, LocationListener {
-
+  
 	private boolean connected = false;
 	private LocationClient client = null;
 	private LocationRequest request;
@@ -116,9 +116,7 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 				bearing = (float)((orientation[0] / Math.PI + 1) * 180);
 				locationListener.onBearingChanged(bearing);
 				lastSent = now;
-			} else {
-				Log.w("glen", "no inclination");
-			}
+			} 
 		}
 	}
 
