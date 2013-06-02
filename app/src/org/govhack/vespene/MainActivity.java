@@ -205,6 +205,7 @@ public class MainActivity extends Activity implements OnInitListener {
   }
 
   public void onBearingChanged(float bearing) {
+    if (true) return; // HACK
     if (getCardsFragment() != null && myLastLocation != null) {
       ViewGroup group = getCardsFragment().root;
 
