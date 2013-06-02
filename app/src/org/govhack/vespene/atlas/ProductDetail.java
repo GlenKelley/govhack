@@ -50,7 +50,11 @@ public class ProductDetail {
 		  JSONArray jsonMultimedia = Json.getArray(json, "multimedia");
 		  for (int i = 0; i < jsonMultimedia.length(); ++i) {
 			  JSONObject jsonMediaItem = Json.getObjectAt(jsonMultimedia, i);
-			  multimedia.add(Json.str(jsonMediaItem, "serverPath"));
+
+			  String type = Json.str(jsonMediaItem, "attributeIdMultimediaContent");
+			  if (type.equals("IMAGE")) {
+				  multimedia.add(Json.str(jsonMediaItem, "serverPath"));			  
+			  }
 		  }
 	  }
 

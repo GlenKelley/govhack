@@ -7,7 +7,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
@@ -18,7 +17,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
 public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedListener, SensorEventListener, LocationListener {
-  
+
 	private boolean connected = false;
 	private LocationClient client = null;
 	private LocationRequest request;
@@ -115,7 +114,7 @@ public class LocationTracker implements ConnectionCallbacks, OnConnectionFailedL
 				bearing = (float)((orientation[0] / Math.PI + 1) * 180);
 				locationListener.onBearingChanged(bearing);
 				lastSent = now;
-			} 
+			}
 		}
 	}
 

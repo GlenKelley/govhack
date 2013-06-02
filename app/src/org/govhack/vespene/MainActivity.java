@@ -76,7 +76,7 @@ public class MainActivity extends Activity implements OnInitListener {
   }
 
   @Override
-  public void onInit(int i) {    
+  public void onInit(int i) {
   }
 
   @Override
@@ -87,7 +87,7 @@ public class MainActivity extends Activity implements OnInitListener {
     setContentView(R.layout.activity_main);
     getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
     setMainTitle();
-    
+
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
     getActionBar().setHomeButtonEnabled(true);
@@ -102,13 +102,13 @@ public class MainActivity extends Activity implements OnInitListener {
       }
     });
 
-    
+
     SharedPreferences settings = this.getSharedPreferences(WARM_WELCOME_PREFS, Context.MODE_PRIVATE);
     boolean shownWelcome = settings.getBoolean("shownWelcome", false);
-    
+
     if (!shownWelcome) {
       showWarmWelcome();
-      
+
       SharedPreferences.Editor prefEditor = settings.edit();
       prefEditor.putBoolean("shownWelcome", true);
       prefEditor.commit();
