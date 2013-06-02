@@ -43,6 +43,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnInitListener {
 
+  public static final String WARM_WELCOME_PREFS = "";
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
 
@@ -95,6 +96,7 @@ public class MainActivity extends Activity implements OnInitListener {
       }
     });
 
+    
     showWarmWelcome();
 //    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
 //    mp.identify(Installation.id(this));
