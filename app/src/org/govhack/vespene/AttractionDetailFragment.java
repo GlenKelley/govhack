@@ -20,9 +20,11 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
@@ -49,6 +51,13 @@ public class AttractionDetailFragment extends Fragment {
   private Favourites favourites = null;
   private TextToSpeech tts = null;
 
+  final OnClickListener onClickShrinkMap = new OnClickListener() {
+    @Override
+    public void onClick(View v) {
+      shrinkMap();
+    }
+  };
+  
   public void setFavourites(Favourites favourites) {
     this.favourites = favourites;
   }
@@ -111,6 +120,7 @@ public class AttractionDetailFragment extends Fragment {
 
     getTv(R.id.detail_description).setText(product.description);
     getTv(R.id.detail_description).setTypeface(tfThin);
+    getTv(R.id.detail_description).setOnClickListener(onClickShrinkMap);
     getTv(R.id.detail_description).setOnLongClickListener(new OnLongClickListener() {
       @Override
       public boolean onLongClick(View v) {
@@ -217,12 +227,7 @@ public class AttractionDetailFragment extends Fragment {
         expandMap();
       }
     });
-    detailContainer.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        shrinkMap();
-      }
-    });
+    detailContainer.setOnClickListener(onClickShrinkMap);
 
     map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
       @Override
@@ -245,9 +250,9 @@ public class AttractionDetailFragment extends Fragment {
     LinearLayout sectionContainer = (LinearLayout)getV(R.id.detail_sections);
     LinearLayout mapContainer = (LinearLayout)getV(R.id.detail_map_container);
     LinearLayout.LayoutParams lp =
-        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 4);
+        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 6);
     mapContainer.setLayoutParams(lp);
-    sectionContainer.setWeightSum(6);
+    sectionContainer.setWeightSum(8);
     sectionContainer.requestLayout();
   }
 

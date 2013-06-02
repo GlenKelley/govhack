@@ -39,7 +39,7 @@ public class Atlas {
 
     protected abstract void data(JSONObject data) throws JSONException;
   }
-
+  
   private static final String URL_PREFIX = "http://govhack.atdw.com.au/productsearchservice.svc/";
   private static final String KEY = "278965474541";
   private static final String LANGUAGE = "ENGLISH"; // "CHINESE-T"
