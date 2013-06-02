@@ -79,7 +79,7 @@ public class ImageFetcher {
       // Try to open from storage
       String filename = filenameForUrl(url);
       try {
-        Log.i(TAG, "Loading file " + filename);
+        Log.i(TAG, "Loading file " + filename + " of url " + url);
         FileInputStream stream = context.openFileInput(filename);
         return imageFromStream(stream, url);
       } catch (IOException e) {
