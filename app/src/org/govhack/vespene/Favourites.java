@@ -61,10 +61,14 @@ public class Favourites {
   public boolean toggleFave(ProductHeader header) {
     if (favourites.contains(header)) {
       favourites.remove(header);
+      Instrumentation.t("favourite-removed", "product", header.id, "distance", header.locationKms,
+          "category", header.categoryId.name());
       save();
       return false;
     } else {
       favourites.add(header);
+      Instrumentation.t("favourite-added", "product", header.id, "distance", header.locationKms,
+          "category", header.categoryId.name());
       save();
       return true;
     }

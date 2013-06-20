@@ -1,11 +1,7 @@
 package org.govhack.vespene;
 
-import org.govhack.vespene.atlas.Search;
-import org.govhack.vespene.util.Preconditions;
-
 import android.app.ActionBar.OnMenuVisibilityListener;
 import android.app.Fragment;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;

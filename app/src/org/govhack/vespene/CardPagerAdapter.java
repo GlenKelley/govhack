@@ -31,6 +31,7 @@ public class CardPagerAdapter extends BaseAdapter {
   private final Favourites favourites;
   private final ImageFetcher images;
   private List<Product> products = Lists.newArrayList();
+  private AttractionDetailFragment activeDetailFragment = null;
 
   public CardPagerAdapter(MainActivity activity, Favourites favourites, ImageFetcher images) {
     this.activity = activity;
@@ -82,7 +83,6 @@ public class CardPagerAdapter extends BaseAdapter {
     return populateView(cardView, product);
   }
 
-  AttractionDetailFragment activeDetailFragment = null;
   private ViewGroup populateView(ViewGroup cardView, final Product product) {
     cardView.setOnClickListener(new OnClickListener() {
       @Override
@@ -97,6 +97,8 @@ public class CardPagerAdapter extends BaseAdapter {
         	.hide(activity.getFragmentManager().findFragmentById(R.id.fragment_gallery))
         	.addToBackStack("cards")
         	.commit();
+        Instrumentation.t("card-touched", "product", product.id, "distance", product.locationKms,
+            "category", product.categoryId.name());
       }
     });
 

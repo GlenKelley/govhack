@@ -270,24 +270,28 @@ public class MainActivity extends Activity implements OnInitListener {
 
           @Override
           public boolean onQueryTextSubmit(String query) {
-              Geocoder gc = new Geocoder(MainActivity.this);
-              try {
-                  List<Address> address = gc.getFromLocationName(query, 1);
-                  if (address.size() > 0) {
-                      products.doSearch(new Search(new LatLng(address.get(0).getLatitude(),
-                              address.get(0).getLongitude())));
-                  }
-              } catch (IOException e) {
-                  e.printStackTrace();
+            Instrumentation.t("geocode-submitted", "query", query);
+            Geocoder gc = new Geocoder(MainActivity.this);
+            try {
+              List<Address> address = gc.getFromLocationName(query, 1);
+              if (address.size() > 0) {
+                products.doSearch(new Search(new LatLng(address.get(0).getLatitude(),
+                        address.get(0).getLongitude())));
+                Instrumentation.t("search-submitted", "query", query);
+              } else {
+                Instrumentation.t("geocode-no-results");
               }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-              InputMethodManager im = (InputMethodManager) MainActivity.this
-                      .getSystemService(Context.INPUT_METHOD_SERVICE);
-              im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
-                      .getWindowToken(), 0);
-              locationOverride = true;
-              MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(true);
-              return true;
+            InputMethodManager im = (InputMethodManager) MainActivity.this
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus()
+                    .getWindowToken(), 0);
+            locationOverride = true;
+            MainActivity.this.getActionBar().setDisplayHomeAsUpEnabled(true);
+            return true;
           }
       });
     } else {
@@ -321,6 +325,7 @@ public class MainActivity extends Activity implements OnInitListener {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Favourites");
         products.setListFromHeaders(favourites.getFavourites());
+        Instrumentation.t("favourites-displayed");
         return true;
       default:
         return super.onOptionsItemSelected(item);

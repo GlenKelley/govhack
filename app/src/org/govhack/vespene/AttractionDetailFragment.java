@@ -1,6 +1,7 @@
 package org.govhack.vespene;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.govhack.vespene.atlas.Product;
 import org.govhack.vespene.util.Preconditions;
@@ -14,7 +15,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.hardware.GeomagneticField;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -24,11 +24,9 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
@@ -135,6 +133,7 @@ public class AttractionDetailFragment extends Fragment {
             tts.speak(product.description, TextToSpeech.QUEUE_FLUSH, null);
           }
         });
+        track("tts-initiated");
         return true;
       }
     });
@@ -160,6 +159,7 @@ public class AttractionDetailFragment extends Fragment {
           String uri = "tel:" + product.phoneNumber.trim() ;
           Intent intent = new Intent(Intent.ACTION_DIAL);
           intent.setData(Uri.parse(uri));
+          track("callto-touched");
           startActivity(intent);
         }
       });
@@ -177,6 +177,7 @@ public class AttractionDetailFragment extends Fragment {
         public void onClick(View v) {
           Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
               "mailto",product.emailAddress, null));
+          track("mailto-touched");
           startActivity(intent);
         }
       });
@@ -201,6 +202,7 @@ public class AttractionDetailFragment extends Fragment {
           public void onClick(View v) {
             ImageViewFragment fragment = new ImageViewFragment();
             fragment.setUrl(url);
+            track("gallery-image-touched");
             activity.getFragmentManager().beginTransaction()
                 .add(android.R.id.content, fragment)
                 .hide(AttractionDetailFragment.this)
@@ -223,12 +225,14 @@ public class AttractionDetailFragment extends Fragment {
     map.setOnMapClickListener(new OnMapClickListener() {
       @Override
       public void onMapClick(LatLng arg0) {
+        track("map-expanded");
         expandMap();
       }
     });
     mapContainer.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        track("map-expanded");
         expandMap();
       }
     });
@@ -242,6 +246,7 @@ public class AttractionDetailFragment extends Fragment {
                 + "," + m.getPosition().longitude + "&dirflg=w"));
         intent.setComponent(new ComponentName("com.google.android.apps.maps",
             "com.google.android.maps.MapsActivity"));
+        track("map-directions-launched");
         startActivity(intent);
       }
     });
@@ -298,5 +303,13 @@ public class AttractionDetailFragment extends Fragment {
 
   private Spanned emailLink(String addr) {
     return Html.fromHtml(String.format("<a href=\"mailto:%s\">%s</a>", addr, addr));
+  }
+  
+  private void track(String event, Object... properties) {
+    ArrayList<Object> newProperties = new ArrayList<Object>();
+    newProperties.addAll(Arrays.asList(properties));
+    newProperties.add("product");
+    newProperties.add(product.id);
+    Instrumentation.t(event, newProperties.toArray());
   }
 }
