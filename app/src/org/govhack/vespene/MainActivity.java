@@ -42,6 +42,8 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
 public class MainActivity extends Activity implements OnInitListener {
 
   public static final String WARM_WELCOME_PREFS = "WarmWelcomePrefs";
@@ -49,11 +51,11 @@ public class MainActivity extends Activity implements OnInitListener {
   public static final int ALARM_CODE = 192837;
 
   private static final DateMidnight BEGINNING = new DateMidnight(2013, 4, 14);
-//  private static final String MP_API_TOKEN = "b84f696d81a182f5d327547dfa382648";
+  private static final String MP_API_TOKEN = "326a339341dcd3a95f5b46b41ade014b";
 
   private static final String TAG = "Main";
 
-//  private MixpanelAPI mp;
+  private MixpanelAPI mp;
 
   private Atlas atlas = new Atlas(new AsyncUrlFetcher());
   private ProductList products = new ProductList(atlas);
@@ -113,14 +115,13 @@ public class MainActivity extends Activity implements OnInitListener {
       prefEditor.putBoolean("shownWelcome", true);
       prefEditor.commit();
     }
-//    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
-//    mp.identify(Installation.id(this));
-//    if (Installation.wasNewInstallation()) {
-//      track("new-install");
-//    }
+    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
+    mp.identify(Installation.id(this));
+    if (Installation.wasNewInstallation()) {
+      track("new-install");
+    }
 
     track("app-create");
-//    tts = new TextToSpeech(this, this);
   }
 
   private void showWarmWelcome() {
@@ -252,7 +253,7 @@ public class MainActivity extends Activity implements OnInitListener {
   @Override
   protected void onStop() {
     Log.d(TAG, "onStop");
-//    mp.flush();
+    mp.flush();
     super.onStop();
   }
 
@@ -357,7 +358,7 @@ public class MainActivity extends Activity implements OnInitListener {
     if (BuildConfig.DEBUG) {
       Log.d("MP", event + ": " + j);
     } else {
-//      mp.track(event, j);
+      mp.track(event, j);
     }
   }
 
