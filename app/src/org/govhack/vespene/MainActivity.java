@@ -50,16 +50,10 @@ public class MainActivity extends Activity implements OnInitListener {
   public static final String ACTION_LATEST = "latest";
   public static final int ALARM_CODE = 192837;
 
-  private static final DateMidnight BEGINNING = new DateMidnight(2013, 4, 14);
-  private static final String MP_API_TOKEN = "326a339341dcd3a95f5b46b41ade014b";
-
   private static final String TAG = "Main";
-
-  private MixpanelAPI mp;
 
   private Atlas atlas = new Atlas(new AsyncUrlFetcher());
   private ProductList products = new ProductList(atlas);
-  private TextToSpeech tts = null;
   private LocationTracker locationTracker = null;
   private Favourites favourites = new Favourites(this);
 
@@ -72,11 +66,6 @@ public class MainActivity extends Activity implements OnInitListener {
   private Location myLastLocation = null;
   private LatLng myLastLatLng = null;
 
-  public static int dayCount() {
-    DateMidnight today = new DateMidnight();
-    return Days.daysBetween(BEGINNING, today).getDays();
-  }
-
   @Override
   public void onInit(int i) {
   }
@@ -85,6 +74,7 @@ public class MainActivity extends Activity implements OnInitListener {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.i(TAG, "onCreate");
+    Instrumentation.initialise(this);
     images = new ImageFetcher(getApplicationContext());
     setContentView(R.layout.activity_main);
     getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
@@ -104,7 +94,6 @@ public class MainActivity extends Activity implements OnInitListener {
       }
     });
 
-
     SharedPreferences settings = this.getSharedPreferences(WARM_WELCOME_PREFS, Context.MODE_PRIVATE);
     boolean shownWelcome = settings.getBoolean("shownWelcome", false);
 
@@ -115,13 +104,7 @@ public class MainActivity extends Activity implements OnInitListener {
       prefEditor.putBoolean("shownWelcome", true);
       prefEditor.commit();
     }
-    mp = MixpanelAPI.getInstance(this, MP_API_TOKEN);
-    mp.identify(Installation.id(this));
-    if (Installation.wasNewInstallation()) {
-      track("new-install");
-    }
-
-    track("app-create");
+    Instrumentation.t("app-create");
   }
 
   private void showWarmWelcome() {
@@ -172,7 +155,7 @@ public class MainActivity extends Activity implements OnInitListener {
       }
       //CardsFragment gallery = (CardsFragment) fm.findFragmentById(R.id.fragment_gallery);
       //gallery.showLast();
-      track("app-launch-from-notification");
+      Instrumentation.t("app-launch-from-notification");
     }
   }
 
@@ -199,7 +182,7 @@ public class MainActivity extends Activity implements OnInitListener {
 
     Log.d(TAG, "onStart");
     super.onStart();
-    track("app-start");
+    Instrumentation.t("app-start");
     locationTracker = new LocationTracker(this, this);
 
 //	tts.setLanguage(Locale.US);
@@ -253,7 +236,7 @@ public class MainActivity extends Activity implements OnInitListener {
   @Override
   protected void onStop() {
     Log.d(TAG, "onStop");
-    mp.flush();
+    Instrumentation.instance().flush();
     super.onStop();
   }
 
@@ -310,8 +293,6 @@ public class MainActivity extends Activity implements OnInitListener {
     } else {
       // No menu in non-root view
     }
-
-    track("options-menu-shown");
     return true;
   }
 
@@ -343,22 +324,6 @@ public class MainActivity extends Activity implements OnInitListener {
         return true;
       default:
         return super.onOptionsItemSelected(item);
-    }
-  }
-
-  void track(String event, Object...objects) {
-    JSONObject j = new JSONObject();
-    try {
-      for (int i = 0; i < objects.length - 1; i += 2) {
-        j.put((String)objects[i], objects[i+1]);
-      }
-    } catch (JSONException e) {
-      Log.e(TAG, "Exception in analytics", e);
-    }
-    if (BuildConfig.DEBUG) {
-      Log.d("MP", event + ": " + j);
-    } else {
-      mp.track(event, j);
     }
   }
 
